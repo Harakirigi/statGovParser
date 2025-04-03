@@ -96,5 +96,17 @@ def download_excel_file(title, link, save_path='downloads'):
         print(CYAN + f"Successfully downloaded: {filename}" + RESET)
         return filepath
     except Exception as e:
-            print(RED + f"Failed to download {link}: {str(e)}" + RESET)
-            return None
+        print(RED + f"Failed to download {link}: {str(e)}" + RESET)
+        return None
+    
+def download_all():
+    soup = get_request(parse_url)
+
+    bodies = get_body(soup, parse_url)
+
+    links = get_link(bodies)
+
+    for title, link in links.items():
+        download_excel_file(title, link)
+
+# download_all()
