@@ -32,5 +32,5 @@ def get_stats(soup):
     stat = stat_list.find
 
 
-soup = get_request(parse_url)
-get_stats(soup)
+# soup = get_request(parse_url)
+# get_stats(soup)

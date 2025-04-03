@@ -9,9 +9,9 @@ YELLOW = '\033[33m'
 BLUE = '\033[34m'
 RESET = '\033[0m'
 
-
 url = "https://stat.gov.kz"
 parse_url = "https://stat.gov.kz/en/industries/labor-and-income/stat-empt-unempl/dynamic-tables/"
+
 
 def get_request(parse_url):
     try:
@@ -98,20 +98,3 @@ def download_excel_file(title, link, save_path='downloads'):
     except Exception as e:
             print(RED + f"Failed to download {link}: {str(e)}" + RESET)
             return None
-    
-
-
-
-# soup = get_request(parse_url)
-
-# bodies = get_body(soup, parse_url)
-
-# links = get_link(bodies)
-
-# for title, link in links.items():
-#     download_excel_file(title, link)
-
-
-
-
-
