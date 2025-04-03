@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import os
+import pprint
 
 
 url = "https://stat.gov.kz"
@@ -12,7 +13,7 @@ def get_request():
         response.raise_for_status()
         
         soup = BeautifulSoup(response.text, "lxml")
-        get_link(soup, parse_url)
+        return get_link(soup, parse_url)
     except requests.exceptions.RequestException as error:
         print(f"Request failed: {error}")
     except Exception as error:
@@ -27,16 +28,40 @@ def get_link(soup, parse_url):
             print(f"Could not find rows in {parse_url}")
             return
         
-        links = []
+        links = {}
         for row in rows:
             link = row.find('a')
             api_link = link['href']
-            links.append(url + api_link)
-        print(links)
+            links[link.text.strip().replace('"','').replace(' ','_')] = url + api_link
+        return links
             
     except Exception as error:
         print('Error while getting link: ', error)
 
 
 
-get_request()
+links = get_request()
+
+def download_excel_file(title, link, save_path='downloads'):
+    os.makedirs(save_path, exist_ok=True)
+    try:
+        response = requests.get(link, stream=True, headers={'User-Agent': 'Mozilla/5.0'})
+        response.raise_for_status()
+        
+        filename = title + '.xlsx'
+        filepath = os.path.join(save_path, filename)
+        
+        with open(filepath, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+        
+        print(f"Successfully downloaded: {filename}")
+        return filepath
+    except Exception as e:
+            print(f"Failed to download {link}: {str(e)}")
+            return None
+    
+for title, link in links.items():
+    download_excel_file(title, link)
+
+
