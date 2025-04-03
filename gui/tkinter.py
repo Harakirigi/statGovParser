@@ -16,12 +16,29 @@ frame.pack(padx=20, pady=20)
 def show_input():
     parse_url = 'https://stat.gov.kz'
     response = get_request(parse_url)
+
     if response:
-        res.config(text=f'Request to {parse_url} obtained successfully!\nNow you can download it: ', fg='green')
-        download_button = tk.Button(root, text="Send request", command=download)
+        welcome.destroy()
+        send_request.destroy()
+
+        global success
+        success = tk.Label(root, text=f'Request to {parse_url} has been sent successfully!', fg='green')
+        success.pack()
+
+        global call_action
+        call_action = tk.Label(root, text='Now you can choose the category')
+        call_action.pack()
+
+        global download_button
+        download_button = tk.Button(root, text="Download", command=download)
         download_button.pack(padx=10, pady=15)
     else:
-        res.config(text=f'Request to {parse_url} failed! Try again later', fg='red')
+        fail = tk.Label(root, text=f'Request to {parse_url} failed! Try again later', fg='red')
+        fail.pack()
+
+        exit_btn = tk.Button(root, text="Exit", command=root.quit, padx=10)
+        exit_btn.pack(padx=10, pady=15)
+
 
 def download():
     res_2 = tk.Label(root, text='Downloading...', fg='green')
@@ -29,6 +46,10 @@ def download():
 
     download_all()
     res_2.config(text='Everything downloaded successfully!')
+
+    success.destroy()
+    call_action.destroy()
+    download_button.destroy()
 
     exit_btn = tk.Button(root, text="Exit", command=root.quit, padx=10)
     exit_btn.pack(padx=10, pady=15)
@@ -49,19 +70,11 @@ file_menu.add_command(label="New", command=show_input)
 file_menu.add_separator()
 file_menu.add_command(label="Exit", command=root.quit)
 
-label = tk.Label(
-    root, 
-    text="Send request to the stat.gov.kz to access the parser:")
-label.pack()
+welcome = tk.Label(root, text="Send request to the stat.gov.kz to access the parser:")
+welcome.pack()
 
+send_request = tk.Button(root, text="Send request", command=show_input)
+send_request.pack(padx=10, pady=15)
 # entry = tk.Entry(root, width=80)
 # entry.pack()
-
-button = tk.Button(root, text="Send request", command=show_input)
-button.pack(padx=10, pady=15)
-
-res = tk.Label(root)
-res.pack()
-
-
 
