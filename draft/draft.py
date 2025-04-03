@@ -5,7 +5,7 @@ import pprint
 
 
 url = "https://stat.gov.kz"
-parse_url = "https://stat.gov.kz/en/industries/economy/national-accounts/spreadsheets/"
+parse_url = "https://stat.gov.kz/en/industries/economy/prices/spreadsheets/"
 
 def get_request():
     try:
@@ -32,7 +32,14 @@ def get_link(soup, parse_url):
         for row in rows:
             link = row.find('a')
             api_link = link['href']
-            links[link.text.strip().replace('"','').replace(' ','_')] = url + api_link
+            link_title = link.text.strip().replace('"','').replace(' ','_')
+
+            if not link_title or link_title == 'xls':
+                link_title = row.find(class_='divTableCell').text.strip().replace('"','').replace(' ','_')
+                link_title = 'Dynamic table ' + link_title
+                
+            links[link_title] = url + api_link
+
         return links
             
     except Exception as error:
