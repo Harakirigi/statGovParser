@@ -31,6 +31,8 @@ def start():
         call_action = tk.Label(frame, text='Now you can choose the category')
         call_action.pack()
 
+        
+
         economics_btn = tk.Button(frame, text='Econimics', command=lambda: create_buttons(parse_url, 'Economics'))
         economics_btn.pack(padx=10, pady=10, side="top")
         social_btn = tk.Button(frame, text='Social statistics', command=lambda: create_buttons(parse_url, 'Social statistics'))
@@ -41,7 +43,7 @@ def start():
         income_btn.pack(padx=10, pady=10, side="top")
         environment_btn = tk.Button(frame, text='Environment', command=lambda: create_buttons(parse_url, 'Environment'))
         environment_btn.pack(padx=10, pady=10, side="top")
-        
+
 
         # global download_button
         # download_button = tk.Button(frame, text="Download", command=download)
