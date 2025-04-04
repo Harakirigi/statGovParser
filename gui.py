@@ -3,12 +3,20 @@ from tkinter import ttk
 import time
 from utils.parser import *
 
+import os
+import sys
+
+if getattr(sys, 'frozen', False):  # Check if running as a packaged app
+    icon_path = os.path.join(sys._MEIPASS, 'static', 'icon.png')
+else:
+    icon_path = './static/icon.png'
+
 # region Config
 
 root = tk.Tk()
 root.geometry("800x600+600+200")
 root.title("Stat.Gov Parser Manager")
-icon = tk.PhotoImage(file='static/icon.png')
+icon = tk.PhotoImage(file=icon_path)
 root.iconphoto(True, icon)
 
 PARSE_URL = 'https://stat.gov.kz/en/'
