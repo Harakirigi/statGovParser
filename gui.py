@@ -40,7 +40,6 @@ def send_request(progress=True):
         exit_btn.pack(pady=5, padx=5)
 
         return print('Error in send_request function')
-    
 
     try:
         clear_window()
@@ -65,7 +64,9 @@ def send_request(progress=True):
         environment_btn.pack(padx=10, pady=10, side="top")
         all_btn = tk.Button(success_page, text='All', command=lambda: create_buttons(PARSE_URL, 'All'))
         all_btn.pack(padx=10, pady=10, side="top")
+
         return
+    
     except Exception as e:
         clear_window()
 
@@ -87,9 +88,12 @@ def send_request(progress=True):
 def create_buttons(PARSE_URL, category_name):
     clear_window()
     category_page = tk.Frame(root)
-    category_page.pack()
+    category_page.pack(pady=5, padx=5)
 
     btns = show_categories(PARSE_URL, category_name)
+
+    category_label = tk.Label(category_page, text=f'Subcategories of {category_name} category')
+    category_label.pack(pady=5, padx=5)
 
     for i, btn_text in enumerate(btns):
         btn_name = f"btn_{i+1}"
@@ -98,6 +102,14 @@ def create_buttons(PARSE_URL, category_name):
 
     back_btn = tk.Button(category_page, text='Back', command=lambda: send_request(progress=False))
     back_btn.pack(pady=5, padx=5)
+
+
+
+
+
+
+
+
 
 
 
@@ -115,7 +127,7 @@ def show_progress():
     label.pack(pady=20)
 
     for i in range(101):
-        time.sleep(0.009)
+        time.sleep(0.001)
         progress_var.set(i)
         root.update_idletasks()
 
