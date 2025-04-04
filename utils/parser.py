@@ -28,3 +28,11 @@ def get_request(parse_url):
 
 # get_request(parse_url)
 
+def get_category(soup, category_name):
+    category_div = soup.find('ul', class_='info-asside-list')
+    category_list = category_div.find_all('li')
+    for category in category_list:
+        if category_name == category.find(class_='info-asside-item-text').text.strip().split('\n')[0]:
+            nav_slide_links = category.find(class_='body-nav-slide').find_all('a')
+            return [link.text.strip() for link in nav_slide_links]
+
