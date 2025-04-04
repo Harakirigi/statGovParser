@@ -10,7 +10,7 @@ BLUE = '\033[34m'
 RESET = '\033[0m'
 
 url = "https://stat.gov.kz"
-parse_url = "https://stat.gov.kz/en/industries/labor-and-income/stat-empt-unempl/dynamic-tables/"
+parse_url = "https://stat.gov.kz/en/"
 
 def get_request(parse_url):
     try:
@@ -42,5 +42,10 @@ def download(SOUP, category_name, btn_text, all):
         print('this will download everything') 
     if category_name != 'All' and btn_text == 'All':
         print(f'this will download everything in {category_name}')
-    print('downloader')
+    
+    body_nav_slide = SOUP.find(class_='body-nav-slide__content')
+    links = body_nav_slide.children()
+    print(links)
 
+SOUP = get_request(parse_url)
+download(SOUP, "Economics", "Statistics of prices", all=False)

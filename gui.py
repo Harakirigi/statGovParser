@@ -8,8 +8,8 @@ from utils.parser import *
 root = tk.Tk()
 root.geometry("800x600+600+200")
 root.title("Stat.Gov Parser Manager")
-icon = tk.PhotoImage(file='../static/icon.png')
-root.iconphoto(True, icon)
+# icon = tk.PhotoImage(file='../static/icon.png')
+# root.iconphoto(True, icon)
 
 PARSE_URL = 'https://stat.gov.kz/en/'
 SOUP = None
