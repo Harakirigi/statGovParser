@@ -63,7 +63,7 @@ def send_request(SOUP=None, progress=True):
         income_btn.pack(padx=10, pady=10, side="top")
         environment_btn = tk.Button(success_page, text='Environment', command=lambda: create_buttons(SOUP, 'Environment'))
         environment_btn.pack(padx=10, pady=10, side="top")
-        all_btn = tk.Button(success_page, text='All', command=lambda: download('All', 'All', all=True), font=("TkDefaultFont", 8, 'bold'))
+        all_btn = tk.Button(success_page, text='All', command=lambda: download(SOUP, 'All', 'All', all=True), font=("TkDefaultFont", 8, 'bold'))
         all_btn.pack(padx=10, pady=10, side="top")
 
         return
@@ -113,17 +113,6 @@ def create_buttons(SOUP, category_name):
         fail_label.pack(pady=5, padx=5)
         back_btn = tk.Button(root, text='Back', command=lambda: send_request(SOUP=SOUP, progress=False))
         back_btn.pack(pady=5, padx=5)
-
-
-
-def download(SOUP, category_name, btn_text, all):
-    if category_name == 'All' and btn_text == 'All' and all == True:
-        print('this will download everything') 
-    if category_name != 'All' and btn_text == 'All':
-        print(f'this will download everything in {category_name}')
-
-
-
 
 
 

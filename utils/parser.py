@@ -37,6 +37,10 @@ def get_category(soup, category_name):
             return [link.text.strip() for link in nav_slide_links]
         
 
-def downloader(category_name, btn_text, all):
+def download(SOUP, category_name, btn_text, all):
+    if category_name == 'All' and btn_text == 'All' and all == True:
+        print('this will download everything') 
+    if category_name != 'All' and btn_text == 'All':
+        print(f'this will download everything in {category_name}')
     print('downloader')
 
