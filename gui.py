@@ -12,7 +12,7 @@ icon = tk.PhotoImage(file='static/icon.png')
 root.iconphoto(True, icon)
 
 PARSE_URL = 'https://stat.gov.kz/en/'
-SOUP = ''
+SOUP = None
 
 
 # endregion
@@ -20,9 +20,10 @@ SOUP = ''
 
 # region Actions
 
-def send_request(progress=True):
-    if progress: show_progress()
-    SOUP = get_request(PARSE_URL)
+def send_request(SOUP=None, progress=True):
+    if not SOUP:
+        if progress: show_progress()
+        SOUP = get_request(PARSE_URL)
 
     if not SOUP:
         clear_window()
@@ -52,17 +53,17 @@ def send_request(progress=True):
         choose_label = tk.Label(success_page, text='Now you can choose the category you want to parse')
         choose_label.pack(pady=5, padx=5)
 
-        economics_btn = tk.Button(success_page, text='Economics', command=lambda: create_buttons('Economics'))
+        economics_btn = tk.Button(success_page, text='Economics', command=lambda: create_buttons(SOUP, 'Economics'))
         economics_btn.pack(padx=10, pady=10, side="top")
-        social_btn = tk.Button(success_page, text='Social statistics', command=lambda: create_buttons('Social statistics'))
+        social_btn = tk.Button(success_page, text='Social statistics', command=lambda: create_buttons(SOUP, 'Social statistics'))
         social_btn.pack(padx=10, pady=10, side="top")
-        industry_btn = tk.Button(success_page, text='Industry statistics', command=lambda: create_buttons('Industry statistics'))
+        industry_btn = tk.Button(success_page, text='Industry statistics', command=lambda: create_buttons(SOUP, 'Industry statistics'))
         industry_btn.pack(padx=10, pady=10, side="top")
-        income_btn = tk.Button(success_page, text='Labor and income', command=lambda: create_buttons('Labor and income'))
+        income_btn = tk.Button(success_page, text='Labor and income', command=lambda: create_buttons(SOUP, 'Labor and income'))
         income_btn.pack(padx=10, pady=10, side="top")
-        environment_btn = tk.Button(success_page, text='Environment', command=lambda: create_buttons('Environment'))
+        environment_btn = tk.Button(success_page, text='Environment', command=lambda: create_buttons(SOUP, 'Environment'))
         environment_btn.pack(padx=10, pady=10, side="top")
-        all_btn = tk.Button(success_page, text='All', command=lambda: create_buttons('All'))
+        all_btn = tk.Button(success_page, text='All', command=lambda: download('All', 'All', all=True), font=("TkDefaultFont", 8, 'bold'))
         all_btn.pack(padx=10, pady=10, side="top")
 
         return
@@ -85,27 +86,41 @@ def send_request(progress=True):
         return print(f'Error in send_request function: {e}')
 
 
-def create_buttons(category_name):
-    clear_window()
-    category_page = tk.Frame(root)
-    category_page.pack(pady=5, padx=5)
+def create_buttons(SOUP, category_name):
+    try:
+        clear_window()
+        category_page = tk.Frame(root)
+        category_page.pack(pady=5, padx=5)
 
-    btns = get_category(SOUP, category_name)
+        btns = get_category(SOUP, category_name)
 
-    category_label = tk.Label(category_page, text=f'Subcategories of {category_name} category')
-    category_label.pack(pady=5, padx=5)
+        category_label = tk.Label(category_page, text=f'Subcategories of {category_name} category', font=("TkDefaultFont", 10, 'bold'))
+        category_label.pack(pady=5, padx=5)
 
-    for i, btn_text in enumerate(btns):
-        btn_name = f"btn_{i+1}"
-        btn_name = tk.Button(category_page, text=btn_text)
-        btn_name.pack(pady=5, padx=5)
+        for i, btn_text in enumerate(btns):
+            btn_name = f"btn_{i+1}"
+            btn_name = tk.Button(category_page, text=btn_text, command=lambda: download(SOUP, category_name, btn_text, all=False))
+            btn_name.pack(pady=5, padx=5)
+        
+        all_btn = tk.Button(category_page, text='Download all above', command=lambda: download(SOUP, category_name, 'All', all=True), font=("TkDefaultFont", 8, 'bold'))
+        all_btn.pack(pady=5, padx=5)
 
-    back_btn = tk.Button(category_page, text='Back', command=lambda: send_request(progress=False))
-    back_btn.pack(pady=5, padx=5)
+        back_btn = tk.Button(category_page, text='Back', command=lambda: send_request(SOUP=SOUP, progress=False))
+        back_btn.pack(pady=5, padx=5)
+    except:
+        clear_window()
+        fail_label = tk.Label(root, text=f'Something went wrong, please try later', fg='red')
+        fail_label.pack(pady=5, padx=5)
+        back_btn = tk.Button(root, text='Back', command=lambda: send_request(SOUP=SOUP, progress=False))
+        back_btn.pack(pady=5, padx=5)
 
 
 
-
+def download(SOUP, category_name, btn_text, all):
+    if category_name == 'All' and btn_text == 'All' and all == True:
+        print('this will download everything') 
+    if category_name != 'All' and btn_text == 'All':
+        print(f'this will download everything in {category_name}')
 
 
 

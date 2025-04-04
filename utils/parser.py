@@ -35,4 +35,8 @@ def get_category(soup, category_name):
         if category_name == category.find(class_='info-asside-item-text').text.strip().split('\n')[0]:
             nav_slide_links = category.find(class_='body-nav-slide').find_all('a')
             return [link.text.strip() for link in nav_slide_links]
+        
+
+def downloader(category_name, btn_text, all):
+    print('downloader')
 
