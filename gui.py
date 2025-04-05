@@ -149,23 +149,47 @@ def create_buttons(SOUP, category_name):
         back_btn.pack(pady=5, padx=5)
 
 
-
+is_json = tk.IntVar()
+is_csv = tk.IntVar()
 def to_get_page(SOUP, category_name, btn_text, all=False):
     clear_window()
     show_progress()
-    stats_label = ttk.Label(root)
 
     links_to_stats = get_page(SOUP, category_name, btn_text, all)
     for link_to_stats in links_to_stats:
         stats_page = get_request(link_to_stats)
 
         if check_stats(stats_page):
-            stats_label.config(text='Choose docs:')
+            clear_window()
+            stats_label = ttk.Label(root, text='What do you want to download?')
+            stats_label.pack(pady=5, padx=5)
+
+            select_option = ttk.Combobox(root, values=['Spreadsheets Only', 'Dynamic Tables', 'Select All'])
+
+            checkbox = ttk.Checkbutton(root, text="Download JSON files if exists", variable=is_json)
+            checkbox.pack(pady=10, padx=10)
+            checkbox = ttk.Checkbutton(root, text="Download CSV files if exists", variable=is_csv)
+            checkbox.pack(pady=10, padx=10)
+
+            download_btn = ttk.Button(root, text='Start download now', command=start_download, style='Accent.TButton')
+            download_btn.pack(pady=5, padx=5)
+            back_btn = ttk.Button(root, text='Back', command=lambda: create_buttons(SOUP=SOUP, category_name=category_name))
+            back_btn.pack(pady=5, padx=5)
         else:
-            stats_label.config(text='Docs not found in this subcategory, choose other ones', style='Danger.TLabel')
+            clear_window()
+            stats_label = ttk.Label(root, text='Docs not found in this subcategory, choose other ones')
+            stats_label.pack(pady=5, padx=5)
+            back_btn = ttk.Button(root, text='Back', command=lambda: create_buttons(SOUP=SOUP, category_name=category_name))
+            back_btn.pack(pady=5, padx=5)
 
 
-
+def start_download():
+    if is_json.get() == 1:
+        print('Selected!')
+        print(is_json)
+    else:
+        print('not selecetee')
+        print(is_json)
 
 # region Util Functions
 
