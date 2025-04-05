@@ -67,7 +67,7 @@ DANGER = '#F43F5E'
 
 def send_request(SOUP=None, progress=True):
     if not SOUP:
-        if progress: show_progress()
+        if progress: show_progress(0.001)
         SOUP = get_request(PARSE_URL)
 
     if not SOUP:
@@ -149,11 +149,12 @@ def create_buttons(SOUP, category_name):
         back_btn.pack(pady=5, padx=5)
 
 
-is_json = tk.IntVar()
-is_csv = tk.IntVar()
+
 def to_get_page(SOUP, category_name, btn_text, all=False):
+    is_json = tk.IntVar()
+    is_csv = tk.IntVar()
     clear_window()
-    show_progress()
+    show_progress(0.003)
 
     links_to_stats = get_page(SOUP, category_name, btn_text, all)
     for link_to_stats in links_to_stats:
@@ -161,6 +162,7 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
 
         if check_stats(stats_page):
             clear_window()
+
             stats_label = ttk.Label(root, text='What do you want to download?')
             stats_label.pack(pady=5, padx=5)
 
@@ -172,8 +174,17 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
             checkbox = ttk.Checkbutton(root, text="Download CSV files if exists", variable=is_csv)
             checkbox.pack(pady=10, padx=10)
 
-            download_btn = ttk.Button(root, text='Start download now', command=start_download, style='Accent.TButton')
-            download_btn.pack(pady=5, padx=5)
+            error_label = ttk.Label(root)
+            error_label.pack(pady=5, padx=5)
+
+            download_btn = ttk.Button(root, text='Start download now', command=lambda: start_download(
+                links_to_stats,
+                select_option.get().strip(), 
+                error_label,
+                json_selected = True if is_json.get() == 1 else False,
+                csv_selected = True if is_csv.get() == 1 else False,
+                ), style='Accent.TButton')
+            download_btn.pack(pady=10, padx=10)
             back_btn = ttk.Button(root, text='Back', command=lambda: create_buttons(SOUP=SOUP, category_name=category_name))
             back_btn.pack(pady=5, padx=5)
         else:
@@ -184,13 +195,14 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
             back_btn.pack(pady=5, padx=5)
 
 
-def start_download():
-    if is_json.get() == 1:
-        print('Selected!')
-        print(is_json)
+def start_download(links_to_stats, option, error_label, json_selected, csv_selected, ):
+    print(option, json_selected, csv_selected, links_to_stats)
+    if not option:
+        error_label.config(text='You have to select one of provided values')
+    if option == 'Spreadsheets' or option == 'Dynamic Tables' or option == 'Select All':
+        print('passed!')
     else:
-        print('not selecetee')
-        print(is_json)
+        error_label.config(text=f'You have to select the provided values only, not {option}')
 
 # region Util Functions
 
@@ -198,7 +210,7 @@ def clear_window():
     for widget in root.winfo_children():
         widget.destroy()
 
-def show_progress():
+def show_progress(duration):
     progress = ttk.Progressbar(root, orient='horizontal', length=300, mode='determinate')
     progress.pack(pady=10)
     label = ttk.Label(root, text="Processing...")
@@ -207,7 +219,7 @@ def show_progress():
     for i in range(101):
         progress['value'] = i
         root.update()
-        time.sleep(0.005)
+        time.sleep(duration)
     progress['value'] = 0
 
 
@@ -240,7 +252,7 @@ def show_progress():
 # region Request Page
 
 request_label = ttk.Label(root, text='Send request to the stat.gov.kz to access the parser:')
-request_label.pack(pady=5, padx=5)
+request_label.pack(pady=10, padx=5)
 
 request_btn = ttk.Button(root, text='Send Request', command=send_request, style='Accent.TButton')
 request_btn.pack(pady=5, padx=5)
