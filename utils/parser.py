@@ -37,15 +37,45 @@ def get_category(soup, category_name):
             return [link.text.strip() for link in nav_slide_links]
         
 
-def download(SOUP, category_name, btn_text, all):
+def get_page(SOUP, category_name, btn_text, all):
     if category_name == 'All' and btn_text == 'All' and all == True:
-        print('this will download everything') 
+        stats_pages = []
+        category_div = SOUP.find('ul', class_='info-asside-list')
+        category_list = category_div.find_all('li')
+        for category in category_list:
+            nav_slide_links = category.find(class_='body-nav-slide').find_all('a')
+            for nav_slide_link in nav_slide_links:
+                if btn_text == nav_slide_link.text.strip().split('\n')[0]:
+                    link_to_stats = url + nav_slide_link['href']
+                    stats_page = get_request(link_to_stats)
+                    return stats_page
+                else:
+                    print(RED + f"Link to {btn_text} not found" + RESET)
+                
     if category_name != 'All' and btn_text == 'All':
         print(f'this will download everything in {category_name}')
     
-    body_nav_slide = SOUP.find(class_='body-nav-slide__content')
-    links = body_nav_slide.children()
-    print(links)
+    category_div = SOUP.find('ul', class_='info-asside-list')
+    category_list = category_div.find_all('li')
+    for category in category_list:
+        if category_name == category.find(class_='info-asside-item-text').text.strip().split('\n')[0]:
+            nav_slide_links = category.find(class_='body-nav-slide').find_all('a')
+            for nav_slide_link in nav_slide_links:
+                if btn_text == nav_slide_link.text.strip().split('\n')[0]:
+                    link_to_stats = url + nav_slide_link['href']
+                    stats_page = get_request(link_to_stats)
+                    return stats_page
+                else:
+                    print(RED + f"Link to {btn_text} not found" + RESET)
+            
+        else:
+            pass
+
+
 
 SOUP = get_request(parse_url)
-download(SOUP, "Economics", "Statistics of prices", all=False)
+page = get_page(SOUP, "Environment", "Statistics of environment", all=False)
+if page:
+    print('page found')
+else:
+    print('page not found   ')
