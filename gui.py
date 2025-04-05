@@ -178,7 +178,7 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
             back_btn.pack(pady=5, padx=5)
         else:
             clear_window()
-            stats_label = ttk.Label(root, text='Docs not found in this subcategory, choose other ones')
+            stats_label = ttk.Label(root, text='Docs not found in this subcategory, choose other ones', foreground=DANGER)
             stats_label.pack(pady=5, padx=5)
             back_btn = ttk.Button(root, text='Back', command=lambda: create_buttons(SOUP=SOUP, category_name=category_name))
             back_btn.pack(pady=5, padx=5)
