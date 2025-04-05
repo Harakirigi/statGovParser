@@ -163,6 +163,9 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
         if check_stats(stats_page):
             clear_window()
 
+            info_label = ttk.Label(root, text=f'You are currently in {category_name}/{btn_text}', font=('Segoe UI', 10, 'bold'))
+            info_label.pack(pady=5, padx=5)
+
             stats_label = ttk.Label(root, text='Select the formats you want to download')
             stats_label.pack(pady=5, padx=5)
 
@@ -199,7 +202,6 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
 
 
 def start_download(category_name, btn_text, links_to_stats, option, error_label, json_selected, csv_selected, ):
-    info_label = ttk.Label(root, text=f'You are currently in {category_name}/{btn_text}')
 
     print(option, json_selected, csv_selected, links_to_stats)
     if len(option) == 0:
