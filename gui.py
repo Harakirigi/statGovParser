@@ -49,7 +49,9 @@ root.title("Stat.Gov Parser Manager")
 # style.configure('Danger.TLabel',
 #     foreground='#F43F5E',
 #     )
-
+sv_ttk.set_theme("dark")
+# root.tk.call('source', 'forest-dark.tcl')
+# ttk.Style().theme_use('forest-dark')
 
 PARSE_URL = 'https://stat.gov.kz/en/'
 SOUP = None
@@ -217,4 +219,4 @@ request_btn = ttk.Button(root, text='Send Request', command=send_request)
 request_btn.pack(pady=5, padx=5)
 
 # endregion
-sv_ttk.set_theme("dark")
+
