@@ -3,6 +3,7 @@ from tkinter import ttk
 import sv_ttk
 import time
 from utils.parser import *
+from styles.title_bar_theme import apply_theme_to_titlebar
 
 # region Config
 
@@ -49,6 +50,7 @@ root.title("Stat.Gov Parser Manager")
 # style.configure('Danger.TLabel',
 #     foreground='#F43F5E',
 #     )
+apply_theme_to_titlebar(root)
 sv_ttk.set_theme("dark")
 # root.tk.call('source', 'forest-dark.tcl')
 # ttk.Style().theme_use('forest-dark')
@@ -100,7 +102,7 @@ def send_request(SOUP=None, progress=True):
         income_btn.pack(padx=10, pady=10, side="top")
         environment_btn = ttk.Button(root, text='Environment', command=lambda: create_buttons(SOUP, 'Environment'))
         environment_btn.pack(padx=10, pady=10, side="top")
-        all_btn = ttk.Button(root, text='All', command=lambda: to_get_page(SOUP, 'All', 'All', all=True))
+        all_btn = ttk.Button(root, text='All', command=lambda: to_get_page(SOUP, 'All', 'All', all=True), style='Accent.TButton')
         all_btn.pack(padx=10, pady=10, side="top")
 
         return
@@ -134,7 +136,7 @@ def create_buttons(SOUP, category_name):
             button = ttk.Button(root, text=btn_text, command=lambda btn_text=btn_text: to_get_page(SOUP, category_name, btn_text, all=False))
             button.pack(pady=5, padx=5)
         
-        all_btn = ttk.Button(root, text='Download all above', command=lambda: to_get_page(SOUP, category_name, 'All', all=True))
+        all_btn = ttk.Button(root, text='Select all above', command=lambda: to_get_page(SOUP, category_name, 'All', all=True), style='Accent.TButton')
         all_btn.pack(pady=5, padx=5)
 
         back_btn = ttk.Button(root, text='Back', command=lambda: send_request(SOUP=SOUP, progress=False))
@@ -215,7 +217,7 @@ def show_progress():
 request_label = ttk.Label(root, text='Send request to the stat.gov.kz to access the parser:')
 request_label.pack(pady=5, padx=5)
 
-request_btn = ttk.Button(root, text='Send Request', command=send_request)
+request_btn = ttk.Button(root, text='Send Request', command=send_request, style='Accent.TButton')
 request_btn.pack(pady=5, padx=5)
 
 # endregion
