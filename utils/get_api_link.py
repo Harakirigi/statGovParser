@@ -10,7 +10,7 @@ BLUE = '\033[34m'
 RESET = '\033[0m'
 
 url = "https://stat.gov.kz"
-parse_url = "https://stat.gov.kz/en/industries/labor-and-income/stat-empt-unempl/dynamic-tables/"
+parse_url = "https://stat.gov.kz/en/industries/environment/stat-eco/spreadsheets/"
 
 
 def get_request(parse_url):

@@ -38,23 +38,46 @@ def get_category(soup, category_name):
         
 
 def get_page(SOUP, category_name, btn_text, all):
+
     if category_name == 'All' and btn_text == 'All' and all == True:
-        stats_pages = []
+        stats_links = []
         category_div = SOUP.find('ul', class_='info-asside-list')
         category_list = category_div.find_all('li')
+
         for category in category_list:
-            nav_slide_links = category.find(class_='body-nav-slide').find_all('a')
-            for nav_slide_link in nav_slide_links:
-                if btn_text == nav_slide_link.text.strip().split('\n')[0]:
-                    link_to_stats = url + nav_slide_link['href']
-                    stats_page = get_request(link_to_stats)
-                    return stats_page
-                else:
-                    print(RED + f"Link to {btn_text} not found" + RESET)
+            body_nav_slide = category.find(class_='body-nav-slide')
+            if body_nav_slide:
+                nav_slide_links = body_nav_slide.find_all('a')
+
+                for nav_slide_link in nav_slide_links:
+                    stats_link = url + nav_slide_link['href']
+                    stats_links.append(stats_link)
+            else:
+                pass
+        return stats_links
                 
-    if category_name != 'All' and btn_text == 'All':
-        print(f'this will download everything in {category_name}')
+
+    if category_name != 'All' and btn_text == 'All' and all == True:
+        stats_links = []
+        category_div = SOUP.find('ul', class_='info-asside-list')
+        category_list = category_div.find_all('li')
+
+        for category in category_list:
+            if category_name == category.find(class_='info-asside-item-text').text.strip().split('\n')[0]:
+                body_nav_slide = category.find(class_='body-nav-slide')
+                if body_nav_slide:
+                    nav_slide_links = body_nav_slide.find_all('a')
+
+                    for nav_slide_link in nav_slide_links:
+                        stats_link = url + nav_slide_link['href']
+                        stats_links.append(stats_link)
+                else:
+                    pass
+            else:
+                pass
+        return stats_links
     
+
     category_div = SOUP.find('ul', class_='info-asside-list')
     category_list = category_div.find_all('li')
     for category in category_list:
@@ -62,20 +85,21 @@ def get_page(SOUP, category_name, btn_text, all):
             nav_slide_links = category.find(class_='body-nav-slide').find_all('a')
             for nav_slide_link in nav_slide_links:
                 if btn_text == nav_slide_link.text.strip().split('\n')[0]:
-                    link_to_stats = url + nav_slide_link['href']
-                    stats_page = get_request(link_to_stats)
-                    return stats_page
-                else:
-                    print(RED + f"Link to {btn_text} not found" + RESET)
+                    stats_link = url + nav_slide_link['href']
+                    return [stats_link]
             
         else:
             pass
 
 
+def check_stats(stats_page):
+    docs_block = stats_page.find(class_='docs-block')
+    if docs_block: return True
+    else: return False
 
-SOUP = get_request(parse_url)
-page = get_page(SOUP, "Environment", "Statistics of environment", all=False)
-if page:
-    print('page found')
-else:
-    print('page not found   ')
+
+
+
+# SOUP = get_request(parse_url)
+# link = get_page(SOUP, "Labor and income", "All", all=True)
+# print(link)
