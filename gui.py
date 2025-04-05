@@ -163,10 +163,11 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
         if check_stats(stats_page):
             clear_window()
 
-            stats_label = ttk.Label(root, text='What do you want to download?')
+            stats_label = ttk.Label(root, text='Select the formats you want to download')
             stats_label.pack(pady=5, padx=5)
 
-            select_option = ttk.Combobox(root, values=['Spreadsheets Only', 'Dynamic Tables', 'Select All'])
+            select_option = ttk.Combobox(root, values=['Spreadsheets only', 'Dynamic Tables only', 'Select All'], state='readonly')
+            select_option.current(0)
             select_option.pack(pady=5, padx=5)
 
             checkbox = ttk.Checkbutton(root, text="Download JSON files if exists", variable=is_json)
@@ -174,12 +175,14 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
             checkbox = ttk.Checkbutton(root, text="Download CSV files if exists", variable=is_csv)
             checkbox.pack(pady=10, padx=10)
 
-            error_label = ttk.Label(root)
+            error_label = ttk.Label(root, foreground=DANGER)
             error_label.pack(pady=5, padx=5)
 
-            download_btn = ttk.Button(root, text='Start download now', command=lambda: start_download(
+            download_btn = ttk.Button(root, text='Download now', command=lambda: start_download(
+                category_name,
+                btn_text,
                 links_to_stats,
-                select_option.get().strip(), 
+                select_option.get(), 
                 error_label,
                 json_selected = True if is_json.get() == 1 else False,
                 csv_selected = True if is_csv.get() == 1 else False,
@@ -195,11 +198,16 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
             back_btn.pack(pady=5, padx=5)
 
 
-def start_download(links_to_stats, option, error_label, json_selected, csv_selected, ):
+def start_download(category_name, btn_text, links_to_stats, option, error_label, json_selected, csv_selected, ):
+    info_label = ttk.Label(root, text=f'You are currently in {category_name}/{btn_text}')
+
     print(option, json_selected, csv_selected, links_to_stats)
-    if not option:
-        error_label.config(text='You have to select one of provided values')
-    if option == 'Spreadsheets' or option == 'Dynamic Tables' or option == 'Select All':
+    if len(option) == 0:
+        error_label.config(text='You have to select one of the provided values')
+    if len(option) > 30:
+        error_label.config(text='Why so many characters...')
+    elif option == 'Spreadsheets only' or option == 'Dynamic Tables only' or option == 'Select All':
+        error_label.config(text=f'')
         print('passed!')
     else:
         error_label.config(text=f'You have to select the provided values only, not {option}')
