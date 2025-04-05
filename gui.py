@@ -165,6 +165,7 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
             stats_label.pack(pady=5, padx=5)
 
             select_option = ttk.Combobox(root, values=['Spreadsheets Only', 'Dynamic Tables', 'Select All'])
+            select_option.pack(pady=5, padx=5)
 
             checkbox = ttk.Checkbutton(root, text="Download JSON files if exists", variable=is_json)
             checkbox.pack(pady=10, padx=10)
