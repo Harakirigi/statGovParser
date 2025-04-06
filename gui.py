@@ -1,9 +1,9 @@
 import tkinter as tk
-from tkinter import ttk
+# from tkinter import ttk
 
-import ttkbootstrap as tb
+import ttkbootstrap as ttk
 from ttkbootstrap.tooltip import ToolTip
-from ttkbootstrap.widgets import Button
+from ttkbootstrap.constants import *
 import sv_ttk
 
 import time
@@ -20,12 +20,12 @@ from styles.title_bar_theme import apply_theme_to_titlebar
 
 # apply_theme_to_titlebar(root)
 # sv_ttk.set_theme("dark")
-root = tb.Window(themename="darkly")
+root = ttk.Window(themename="darkly")
 root.geometry("800x600+600+200")
 root.title("Stat.Gov Parser Manager")
 
 
-PARSE_URL = 'https://stat.gov.kz/en/'
+PARSE_URL = 'https://stat.gov.z/en/'
 SOUP = None
 SUCCESS_COLOR = '#40C9A2'
 DANGER_COLOR = '#F43F5E'
@@ -34,6 +34,16 @@ DANGER_COLOR = '#F43F5E'
 
 
 # region Actions
+
+def request_page():
+    clear_window()
+    request_label = ttk.Label(root, text='Send request to the stat.gov.kz to access the parser:')
+    request_label.pack(pady=10, padx=5)
+
+    request_btn = ttk.Button(root, text='Send Request', command=send_request, bootstyle=PRIMARY)
+    request_btn.pack(pady=5, padx=5)
+
+    
 
 def send_request(SOUP=None, progress=True):
     if not SOUP:
@@ -46,10 +56,10 @@ def send_request(SOUP=None, progress=True):
         fail_label = ttk.Label(root, text=f'Request to {PARSE_URL} failed! Try again later', foreground=DANGER_COLOR)
         fail_label.pack(pady=5, padx=5)
         
-        back_btn = ttk.Button(root, text='Try again', command=send_request)
+        back_btn = ttk.Button(root, text='Try again', command=send_request, bootstyle=PRIMARY)
         back_btn.pack(padx=10, pady=10)
 
-        exit_btn = ttk.Button(root, text="Exit", command=root.quit)
+        exit_btn = ttk.Button(root, text="Exit", command=root.quit, bootstyle=DANGER)
         exit_btn.pack(pady=5, padx=5)
 
         return print('Error in send_request function')
@@ -57,22 +67,22 @@ def send_request(SOUP=None, progress=True):
     try:
         clear_window()
 
-        success_COLOR_label = ttk.Label(root, text=f'Request to {PARSE_URL} has been sent success_COLORfully!', foreground=SUCCESS_COLOR)
+        success_COLOR_label = ttk.Label(root, text=f'Request to {PARSE_URL} has been sent successfully!', foreground=SUCCESS_COLOR)
         success_COLOR_label.pack(pady=5, padx=5)
         choose_label = ttk.Label(root, text='Now you can choose the category you want to parse')
         choose_label.pack(pady=5, padx=5)
 
-        economics_btn = ttk.Button(root, text='Economics', command=lambda: create_buttons(SOUP, 'Economics'))
+        economics_btn = ttk.Button(root, text='Economics', command=lambda: create_buttons(SOUP, 'Economics'), bootstyle=SECONDARY)
         economics_btn.pack(padx=10, pady=10, side="top")
-        social_btn = ttk.Button(root, text='Social statistics', command=lambda: create_buttons(SOUP, 'Social statistics'))
+        social_btn = ttk.Button(root, text='Social statistics', command=lambda: create_buttons(SOUP, 'Social statistics'), bootstyle=SECONDARY)
         social_btn.pack(padx=10, pady=10, side="top")
-        industry_btn = ttk.Button(root, text='Industry statistics', command=lambda: create_buttons(SOUP, 'Industry statistics'))
+        industry_btn = ttk.Button(root, text='Industry statistics', command=lambda: create_buttons(SOUP, 'Industry statistics'), bootstyle=SECONDARY)
         industry_btn.pack(padx=10, pady=10, side="top")
-        income_btn = ttk.Button(root, text='Labor and income', command=lambda: create_buttons(SOUP, 'Labor and income'))
+        income_btn = ttk.Button(root, text='Labor and income', command=lambda: create_buttons(SOUP, 'Labor and income'), bootstyle=SECONDARY)
         income_btn.pack(padx=10, pady=10, side="top")
-        environment_btn = ttk.Button(root, text='Environment', command=lambda: create_buttons(SOUP, 'Environment'))
+        environment_btn = ttk.Button(root, text='Environment', command=lambda: create_buttons(SOUP, 'Environment'), bootstyle=SECONDARY)
         environment_btn.pack(padx=10, pady=10, side="top")
-        all_btn = ttk.Button(root, text='All', command=lambda: to_get_page(SOUP, 'All', 'All', all=True), style='Accent.TButton')
+        all_btn = ttk.Button(root, text='All', command=lambda: to_get_page(SOUP, 'All', 'All', all=True), bootstyle=PRIMARY)
         all_btn.pack(padx=10, pady=10, side="top")
 
         return
@@ -83,10 +93,10 @@ def send_request(SOUP=None, progress=True):
         fail_label = ttk.Label(root, text=f'Request to {PARSE_URL} failed! Try again later', foreground=DANGER_COLOR)
         fail_label.pack(pady=5, padx=5)
         
-        back_btn = ttk.Button(root, text='Try again', command=send_request)
+        back_btn = ttk.Button(root, text='Try again', command=send_request, bootstyle=PRIMARY)
         back_btn.pack(padx=10, pady=10)
 
-        exit_btn = ttk.Button(root, text="Exit", command=root.quit)
+        exit_btn = ttk.Button(root, text="Exit", command=root.quit, bootstyle=DANGER)
         exit_btn.pack(pady=5, padx=5)
 
         return print(f'Error in send_request function: {e}')
@@ -103,19 +113,19 @@ def create_buttons(SOUP, category_name):
 
         for i, btn_text in enumerate(btns):
             btn_name = f"btn_{i+1}"
-            button = ttk.Button(root, text=btn_text, command=lambda btn_text=btn_text: to_get_page(SOUP, category_name, btn_text, all=False))
+            button = ttk.Button(root, text=btn_text, command=lambda btn_text=btn_text: to_get_page(SOUP, category_name, btn_text, all=False), bootstyle=SECONDARY)
             button.pack(pady=5, padx=5)
         
-        all_btn = ttk.Button(root, text='Select all above', command=lambda: to_get_page(SOUP, category_name, 'All', all=True), style='Accent.TButton')
+        all_btn = ttk.Button(root, text='Select all above', command=lambda: to_get_page(SOUP, category_name, 'All', all=True), bootstyle=PRIMARY)
         all_btn.pack(pady=5, padx=5)
 
-        back_btn = ttk.Button(root, text='Back', command=lambda: send_request(SOUP=SOUP, progress=False))
+        back_btn = ttk.Button(root, text='Back', command=lambda: send_request(SOUP=SOUP, progress=False), bootstyle=DARK)
         back_btn.pack(pady=5, padx=5)
     except:
         clear_window()
         fail_label = ttk.Label(root, text=f'Something went wrong, please try later', foreground=DANGER_COLOR)
         fail_label.pack(pady=5, padx=5)
-        back_btn = ttk.Button(root, text='Back', command=lambda: send_request(SOUP=SOUP, progress=False))
+        back_btn = ttk.Button(root, text='Back', command=lambda: send_request(SOUP=SOUP, progress=False), bootstyle=DARK)
         back_btn.pack(pady=5, padx=5)
 
 
@@ -132,8 +142,8 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
     if check_stats(stats_page):
         clear_window()
 
-        info_label = ttk.Label(root, text=f'You are currently in "{category_name}/{btn_text}" directory', font=('Segoe UI', 10, 'bold'))
-        info_label.pack(pady=5, padx=5)
+        DARK_label = ttk.Label(root, text=f'You are currently in "{category_name}/{btn_text}" directory', font=('Segoe UI', 10, 'bold'))
+        DARK_label.pack(pady=5, padx=5)
 
         stats_label = ttk.Label(root, text='Select the format you want to download')
         stats_label.pack(pady=5, padx=5)
@@ -160,15 +170,15 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
             error_label,
             json_selected = True if is_json.get() == 1 else False,
             csv_selected = True if is_csv.get() == 1 else False,
-            ), style='Accent.TButton')
+            ), bootstyle=PRIMARY)
         download_btn.pack(pady=10, padx=10)
-        back_btn = ttk.Button(root, text='Back', command=lambda: create_buttons(SOUP=SOUP, category_name=category_name))
+        back_btn = ttk.Button(root, text='Back', command=lambda: create_buttons(SOUP=SOUP, category_name=category_name), bootstyle=DARK)
         back_btn.pack(pady=5, padx=5)
     else:
         clear_window()
         stats_label = ttk.Label(root, text='Docs not found in this subcategory, choose other ones', foreground=DANGER_COLOR)
         stats_label.pack(pady=5, padx=5)
-        back_btn = ttk.Button(root, text='Back', command=lambda: create_buttons(SOUP=SOUP, category_name=category_name))
+        back_btn = ttk.Button(root, text='Back', command=lambda: create_buttons(SOUP=SOUP, category_name=category_name), bootstyle=DARK)
         back_btn.pack(pady=5, padx=5)
 
 
@@ -257,6 +267,8 @@ home_menu = tk.Menu(menu_bar, tearoff=0, bg='#222222', fg='white',
 menu_bar.add_cascade(label="Home", menu=home_menu)
 toolbar_var = tk.BooleanVar(value=True)
 statusbar_var = tk.BooleanVar(value=True)
+home_menu.add_command(label='Home Page', command=request_page)
+home_menu.add_separator()
 home_menu.add_command(label="Exit", command=root.quit)
 
 
@@ -272,13 +284,7 @@ theme_menu.add_separator()
 theme_menu.add_command(label="Use default", command=lambda: change_theme(root, 'cosmo'))
 
 
-def request_page():
-    clear_window()
-    request_label = ttk.Label(root, text='Send request to the stat.gov.kz to access the parser:')
-    request_label.pack(pady=10, padx=5)
 
-    request_btn = ttk.Button(root, text='Send Request', command=send_request, bootstyle='')
-    request_btn.pack(pady=5, padx=5)
 
 request_page()
 
