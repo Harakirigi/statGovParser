@@ -1,7 +1,11 @@
+__pycache__
 /venv/
+
+# downloaded data
 /html/
 /downloads/
-__pycache__
+
+# pyinstaller
 /dist/
 /build/
 /*.spec
