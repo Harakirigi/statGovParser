@@ -119,47 +119,46 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
     show_progress(0.003)
 
     links_to_stats = get_page(SOUP, category_name, btn_text, all)
-    for link_to_stats in links_to_stats:
-        stats_page = get_request(link_to_stats)
+    stats_page = get_request(links_to_stats[0])
 
-        if check_stats(stats_page):
-            clear_window()
+    if check_stats(stats_page):
+        clear_window()
 
-            info_label = ttk.Label(root, text=f'You are currently in "{category_name}/{btn_text}" directory', font=('Segoe UI', 10, 'bold'))
-            info_label.pack(pady=5, padx=5)
+        info_label = ttk.Label(root, text=f'You are currently in "{category_name}/{btn_text}" directory', font=('Segoe UI', 10, 'bold'))
+        info_label.pack(pady=5, padx=5)
 
-            stats_label = ttk.Label(root, text='Select the format you want to download')
-            stats_label.pack(pady=5, padx=5)
+        stats_label = ttk.Label(root, text='Select the format you want to download')
+        stats_label.pack(pady=5, padx=5)
 
-            select_option = ttk.Combobox(root, values=['Spreadsheets only', 'Dynamic Tables only', 'Select All'], state='readonly')
-            select_option.current(0)
-            select_option.pack(pady=5, padx=5)
+        select_option = ttk.Combobox(root, values=['Spreadsheets only', 'Dynamic Tables only', 'Select All'], state='readonly')
+        select_option.current(0)
+        select_option.pack(pady=5, padx=5)
 
-            json_checkbox = ttk.Checkbutton(root, text="Download JSON files if exists", variable=is_json)
-            json_checkbox.pack(pady=10, padx=10)
-            csv_checkbox = ttk.Checkbutton(root, text="Download CSV files if exists", variable=is_csv)
-            csv_checkbox.pack(pady=10, padx=10)
+        json_checkbox = ttk.Checkbutton(root, text="Download JSON files if exists", variable=is_json)
+        json_checkbox.pack(pady=10, padx=10)
+        csv_checkbox = ttk.Checkbutton(root, text="Download CSV files if exists", variable=is_csv)
+        csv_checkbox.pack(pady=10, padx=10)
 
-            error_label = ttk.Label(root, foreground=DANGER)
+        error_label = ttk.Label(root, foreground=DANGER)
 
-            download_btn = ttk.Button(root, text='Download now', command=lambda: start_download(
-                category_name,
-                btn_text,
-                links_to_stats,
-                select_option.get(), 
-                error_label,
-                json_selected = True if is_json.get() == 1 else False,
-                csv_selected = True if is_csv.get() == 1 else False,
-                ), style='Accent.TButton')
-            download_btn.pack(pady=10, padx=10)
-            back_btn = ttk.Button(root, text='Back', command=lambda: create_buttons(SOUP=SOUP, category_name=category_name))
-            back_btn.pack(pady=5, padx=5)
-        else:
-            clear_window()
-            stats_label = ttk.Label(root, text='Docs not found in this subcategory, choose other ones', foreground=DANGER)
-            stats_label.pack(pady=5, padx=5)
-            back_btn = ttk.Button(root, text='Back', command=lambda: create_buttons(SOUP=SOUP, category_name=category_name))
-            back_btn.pack(pady=5, padx=5)
+        download_btn = ttk.Button(root, text='Download now', command=lambda: start_download(
+            category_name,
+            btn_text,
+            links_to_stats,
+            select_option.get(), 
+            error_label,
+            json_selected = True if is_json.get() == 1 else False,
+            csv_selected = True if is_csv.get() == 1 else False,
+            ), style='Accent.TButton')
+        download_btn.pack(pady=10, padx=10)
+        back_btn = ttk.Button(root, text='Back', command=lambda: create_buttons(SOUP=SOUP, category_name=category_name))
+        back_btn.pack(pady=5, padx=5)
+    else:
+        clear_window()
+        stats_label = ttk.Label(root, text='Docs not found in this subcategory, choose other ones', foreground=DANGER)
+        stats_label.pack(pady=5, padx=5)
+        back_btn = ttk.Button(root, text='Back', command=lambda: create_buttons(SOUP=SOUP, category_name=category_name))
+        back_btn.pack(pady=5, padx=5)
 
 
 def start_download(category_name, btn_text, links_to_stats, option, error_label, json_selected, csv_selected, ):
