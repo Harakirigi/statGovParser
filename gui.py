@@ -3,6 +3,7 @@ from tkinter import ttk
 
 import ttkbootstrap as tb
 from ttkbootstrap.tooltip import ToolTip
+from ttkbootstrap.widgets import Button
 import sv_ttk
 
 import time
@@ -26,8 +27,8 @@ root.title("Stat.Gov Parser Manager")
 
 PARSE_URL = 'https://stat.gov.kz/en/'
 SOUP = None
-SUCCESS = '#40C9A2'
-DANGER = '#F43F5E'
+SUCCESS_COLOR = '#40C9A2'
+DANGER_COLOR = '#F43F5E'
 
 # endregion
 
@@ -42,7 +43,7 @@ def send_request(SOUP=None, progress=True):
     if not SOUP:
         clear_window()
 
-        fail_label = ttk.Label(root, text=f'Request to {PARSE_URL} failed! Try again later', foreground=DANGER)
+        fail_label = ttk.Label(root, text=f'Request to {PARSE_URL} failed! Try again later', foreground=DANGER_COLOR)
         fail_label.pack(pady=5, padx=5)
         
         back_btn = ttk.Button(root, text='Try again', command=send_request)
@@ -56,8 +57,8 @@ def send_request(SOUP=None, progress=True):
     try:
         clear_window()
 
-        success_label = ttk.Label(root, text=f'Request to {PARSE_URL} has been sent successfully!', foreground=SUCCESS)
-        success_label.pack(pady=5, padx=5)
+        success_COLOR_label = ttk.Label(root, text=f'Request to {PARSE_URL} has been sent success_COLORfully!', foreground=SUCCESS_COLOR)
+        success_COLOR_label.pack(pady=5, padx=5)
         choose_label = ttk.Label(root, text='Now you can choose the category you want to parse')
         choose_label.pack(pady=5, padx=5)
 
@@ -79,7 +80,7 @@ def send_request(SOUP=None, progress=True):
     except Exception as e:
         clear_window()
 
-        fail_label = ttk.Label(root, text=f'Request to {PARSE_URL} failed! Try again later', foreground=DANGER)
+        fail_label = ttk.Label(root, text=f'Request to {PARSE_URL} failed! Try again later', foreground=DANGER_COLOR)
         fail_label.pack(pady=5, padx=5)
         
         back_btn = ttk.Button(root, text='Try again', command=send_request)
@@ -112,7 +113,7 @@ def create_buttons(SOUP, category_name):
         back_btn.pack(pady=5, padx=5)
     except:
         clear_window()
-        fail_label = ttk.Label(root, text=f'Something went wrong, please try later', foreground=DANGER)
+        fail_label = ttk.Label(root, text=f'Something went wrong, please try later', foreground=DANGER_COLOR)
         fail_label.pack(pady=5, padx=5)
         back_btn = ttk.Button(root, text='Back', command=lambda: send_request(SOUP=SOUP, progress=False))
         back_btn.pack(pady=5, padx=5)
@@ -149,7 +150,7 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
         csv_checkbox.pack(pady=10, padx=10)
         ToolTip(csv_checkbox, text="Attention! Very few documents have CSV file format supported. You may download XLS file format in majority")
 
-        error_label = ttk.Label(root, foreground=DANGER)
+        error_label = ttk.Label(root, foreground=DANGER_COLOR)
 
         download_btn = ttk.Button(root, text='Download now', command=lambda: start_download(
             category_name,
@@ -165,7 +166,7 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
         back_btn.pack(pady=5, padx=5)
     else:
         clear_window()
-        stats_label = ttk.Label(root, text='Docs not found in this subcategory, choose other ones', foreground=DANGER)
+        stats_label = ttk.Label(root, text='Docs not found in this subcategory, choose other ones', foreground=DANGER_COLOR)
         stats_label.pack(pady=5, padx=5)
         back_btn = ttk.Button(root, text='Back', command=lambda: create_buttons(SOUP=SOUP, category_name=category_name))
         back_btn.pack(pady=5, padx=5)
@@ -191,25 +192,6 @@ def start_download(category_name, btn_text, links_to_stats, option, error_label,
 
 # region Util Functions
 
-
-def show_help():
-    clear_window()
-    help_title = ttk.Label(root, text='Help and Q&A', font=('Segoe UI', 10, 'bold'))
-    help_title.pack(pady=10)
-
-    me_label = ttk.Label(root, text='I am a 19 y.o student from Astana city,\n the enthusiast in programming, web development and data analysis,\n you can check out my last projects and know about me in the GitHub via link below:')
-    me_label.pack(pady=10)
-    github_label = ttk.Label(root, text='Link to my GitHub profile', cursor="hand2")
-    github_label.pack(pady=10)
-
-    help_label = ttk.Label(root, text='StatGovParser is just a pet project of mine to improve my skill in parsing and data analysis.')
-    help_label.pack()
-
-    github_label.bind("<Button-1>", lambda: open_link('https://github.com/Harakirigi'))
-
-
-def open_link(link, event=None):
-    webbrowser.open(link)
 
 def clear_window():
     for widget in root.winfo_children():
@@ -275,8 +257,6 @@ home_menu = tk.Menu(menu_bar, tearoff=0, bg='#222222', fg='white',
 menu_bar.add_cascade(label="Home", menu=home_menu)
 toolbar_var = tk.BooleanVar(value=True)
 statusbar_var = tk.BooleanVar(value=True)
-home_menu.add_command(label="Help", command=show_help)
-home_menu.add_separator()
 home_menu.add_command(label="Exit", command=root.quit)
 
 
@@ -297,7 +277,7 @@ def request_page():
     request_label = ttk.Label(root, text='Send request to the stat.gov.kz to access the parser:')
     request_label.pack(pady=10, padx=5)
 
-    request_btn = ttk.Button(root, text='Send Request', command=send_request, style='Accent.TButton')
+    request_btn = ttk.Button(root, text='Send Request', command=send_request, bootstyle='')
     request_btn.pack(pady=5, padx=5)
 
 request_page()
