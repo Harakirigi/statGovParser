@@ -1,4 +1,7 @@
-venv
-html
-downloads
+/venv/
+/html/
+/downloads/
 __pycache__
+/dist/
+/build/
+/*.spec
