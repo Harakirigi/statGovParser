@@ -10,50 +10,12 @@ from styles.title_bar_theme import apply_theme_to_titlebar
 root = tk.Tk()
 root.geometry("800x600+600+200")
 root.title("Stat.Gov Parser Manager")
-# root.configure(background='#0F172A')
-
 # icon = tk.PhotoImage(file='../static/icon.png')
 # root.iconphoto(True, icon)
-# style = ttk.Style()
-# style.theme_use('default')
 
-# style.configure('.',
-#     background='#0F172A',
-#     foreground='#FFFFFF',
-#     font=('Segoe UI', 10),
-#     padding=5,
-# )
-
-# style.configure('TButton',
-#     background='#1E293B',
-#     foreground='#FFFFFF',
-#     borderwidth=1,
-#     padding=(3, 3),
-#     relief='solid',
-#     anchor='center',
-# )
-# style.map('TButton',
-#     background=[('active', '#202F46'), ('pressed', '#FFFFFF')],
-#     foreground=[('active', '#FFFFFF'), ('pressed', '#202F46')],
-# )
-
-
-# style.configure('Normal.TLabel',
-#     background='#0F172A',
-#     foreground='#FFFFFF',
-#     font=('Segoe UI', 10),
-#     padding=5,
-#     )
-# style.configure('Success.TLabel',
-#     foreground='#40C9A2',
-#     )
-# style.configure('Danger.TLabel',
-#     foreground='#F43F5E',
-#     )
 apply_theme_to_titlebar(root)
 sv_ttk.set_theme("dark")
-# root.tk.call('source', 'forest-dark.tcl')
-# ttk.Style().theme_use('forest-dark')
+
 
 PARSE_URL = 'https://stat.gov.kz/en/'
 SOUP = None

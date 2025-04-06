@@ -1,7 +1,10 @@
-# from tkinter import ttk
+# root.tk.call('source', 'forest-dark.tcl')
+# ttk.Style().theme_use('forest-dark')
 
+# root.configure(background='#0F172A')
 
 # style = ttk.Style()
+# style.theme_use('vista')
 
 # style.configure('.',
 #     background='#0F172A',
