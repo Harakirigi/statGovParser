@@ -135,10 +135,10 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
             select_option.current(0)
             select_option.pack(pady=5, padx=5)
 
-            checkbox = ttk.Checkbutton(root, text="Download JSON files if exists", variable=is_json)
-            checkbox.pack(pady=10, padx=10)
-            checkbox = ttk.Checkbutton(root, text="Download CSV files if exists", variable=is_csv)
-            checkbox.pack(pady=10, padx=10)
+            json_checkbox = ttk.Checkbutton(root, text="Download JSON files if exists", variable=is_json)
+            json_checkbox.pack(pady=10, padx=10)
+            csv_checkbox = ttk.Checkbutton(root, text="Download CSV files if exists", variable=is_csv)
+            csv_checkbox.pack(pady=10, padx=10)
 
             error_label = ttk.Label(root, foreground=DANGER)
 
@@ -186,10 +186,10 @@ def clear_window():
     for widget in root.winfo_children():
         widget.destroy()
 
-def show_progress(duration):
+def show_progress(duration, label='Processing...', ):
     progress = ttk.Progressbar(root, orient='horizontal', length=300, mode='determinate')
     progress.pack(pady=10)
-    label = ttk.Label(root, text="Processing...")
+    label = ttk.Label(root, text=label)
     label.pack(pady=10)
 
     for i in range(101):
@@ -204,25 +204,7 @@ def show_progress(duration):
 
 
 
-# def download():
-#     res_2 = ttk.Label(frame, text='Downloading...', foreground='green')
-#     res_2.pack()
-
-#     download_all()
-#     res_2.config(text='Everything downloaded successfully!')
-
-#     success.destroy()
-#     call_action.destroy()
-#     # download_button.destroy()
-
-#     exit_btn = ttk.Button(frame, text="Exit", command=frame.quit, padx=10)
-#     exit_btn.pack(padx=10, pady=15)
-
-
 # text = ttk.Text(frame, height=5, width=30)
-# frame = ttk.Frame(frame, borderwidth=2, relief="groove")
-# check = ttk.Checkbutton(frame, text="Agree", variable=var)
-# radio = ttk.Radiobutton(frame, text="Option 1", variable=var, value=1)
 
 
 # region Request Page
