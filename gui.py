@@ -163,10 +163,10 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
         if check_stats(stats_page):
             clear_window()
 
-            info_label = ttk.Label(root, text=f'You are currently in {category_name}/{btn_text}', font=('Segoe UI', 10, 'bold'))
+            info_label = ttk.Label(root, text=f'You are currently in "{category_name}/{btn_text}" directory', font=('Segoe UI', 10, 'bold'))
             info_label.pack(pady=5, padx=5)
 
-            stats_label = ttk.Label(root, text='Select the formats you want to download')
+            stats_label = ttk.Label(root, text='Select the format you want to download')
             stats_label.pack(pady=5, padx=5)
 
             select_option = ttk.Combobox(root, values=['Spreadsheets only', 'Dynamic Tables only', 'Select All'], state='readonly')
@@ -179,7 +179,6 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
             checkbox.pack(pady=10, padx=10)
 
             error_label = ttk.Label(root, foreground=DANGER)
-            error_label.pack(pady=5, padx=5)
 
             download_btn = ttk.Button(root, text='Download now', command=lambda: start_download(
                 category_name,
@@ -206,11 +205,16 @@ def start_download(category_name, btn_text, links_to_stats, option, error_label,
     print(option, json_selected, csv_selected, links_to_stats)
     if len(option) == 0:
         error_label.config(text='You have to select one of the provided values')
+        error_label.pack(pady=5, padx=5)
+    
     if len(option) > 30:
         error_label.config(text='Why so many characters...')
+
     elif option == 'Spreadsheets only' or option == 'Dynamic Tables only' or option == 'Select All':
         error_label.config(text=f'')
+        error_label.pack(pady=5, padx=5)
         print('passed!')
+
     else:
         error_label.config(text=f'You have to select the provided values only, not {option}')
 
