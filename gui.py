@@ -25,7 +25,7 @@ root.geometry("800x600+600+200")
 root.title("Stat.Gov Parser Manager")
 
 
-PARSE_URL = 'https://stat.gov.z/en/'
+PARSE_URL = 'https://stat.gov.kz/en/'
 SOUP = None
 SUCCESS_COLOR = '#40C9A2'
 DANGER_COLOR = '#F43F5E'
@@ -43,7 +43,7 @@ def request_page():
     request_btn = ttk.Button(root, text='Send Request', command=send_request, bootstyle=PRIMARY)
     request_btn.pack(pady=5, padx=5)
 
-    
+
 
 def send_request(SOUP=None, progress=True):
     if not SOUP:
