@@ -1,20 +1,27 @@
 import tkinter as tk
 from tkinter import ttk
+
+import ttkbootstrap as tb
+from ttkbootstrap.tooltip import ToolTip
 import sv_ttk
+
 import time
+import webbrowser
+
 from utils.parser import *
 from styles.title_bar_theme import apply_theme_to_titlebar
 
 # region Config
 
-root = tk.Tk()
-root.geometry("800x600+600+200")
-root.title("Stat.Gov Parser Manager")
+# root = tk.Tk()
 # icon = tk.PhotoImage(file='../static/icon.png')
 # root.iconphoto(True, icon)
 
-apply_theme_to_titlebar(root)
-sv_ttk.set_theme("dark")
+# apply_theme_to_titlebar(root)
+# sv_ttk.set_theme("dark")
+root = tb.Window(themename="darkly")
+root.geometry("800x600+600+200")
+root.title("Stat.Gov Parser Manager")
 
 
 PARSE_URL = 'https://stat.gov.kz/en/'
@@ -136,8 +143,11 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
 
         json_checkbox = ttk.Checkbutton(root, text="Download JSON files if exists", variable=is_json)
         json_checkbox.pack(pady=10, padx=10)
+        ToolTip(json_checkbox, text="Attention! Very few documents have JSON file format supported. You may download XLS file format in majority")
+
         csv_checkbox = ttk.Checkbutton(root, text="Download CSV files if exists", variable=is_csv)
         csv_checkbox.pack(pady=10, padx=10)
+        ToolTip(csv_checkbox, text="Attention! Very few documents have CSV file format supported. You may download XLS file format in majority")
 
         error_label = ttk.Label(root, foreground=DANGER)
 
@@ -181,9 +191,30 @@ def start_download(category_name, btn_text, links_to_stats, option, error_label,
 
 # region Util Functions
 
+
+def show_help():
+    clear_window()
+    help_title = ttk.Label(root, text='Help and Q&A', font=('Segoe UI', 10, 'bold'))
+    help_title.pack(pady=10)
+
+    me_label = ttk.Label(root, text='I am a 19 y.o student from Astana city,\n the enthusiast in programming, web development and data analysis,\n you can check out my last projects and know about me in the GitHub via link below:')
+    me_label.pack(pady=10)
+    github_label = ttk.Label(root, text='Link to my GitHub profile', cursor="hand2")
+    github_label.pack(pady=10)
+
+    help_label = ttk.Label(root, text='StatGovParser is just a pet project of mine to improve my skill in parsing and data analysis.')
+    help_label.pack()
+
+    github_label.bind("<Button-1>", lambda: open_link('https://github.com/Harakirigi'))
+
+
+def open_link(link, event=None):
+    webbrowser.open(link)
+
 def clear_window():
     for widget in root.winfo_children():
-        widget.destroy()
+        if widget is not menu_bar:
+            widget.destroy()
 
 def show_progress(duration, label='Processing...', ):
     progress = ttk.Progressbar(root, orient='horizontal', length=300, mode='determinate')
@@ -198,6 +229,33 @@ def show_progress(duration, label='Processing...', ):
     progress['value'] = 0
 
 
+# def fade_out(window, step=0.05):
+#     alpha = window.attributes('-alpha')
+#     while alpha > 0:
+#         alpha -= step
+#         if alpha < 0:
+#             alpha = 0
+#         window.attributes('-alpha', alpha)
+#         window.update()
+#         time.sleep(0.01)
+
+# def fade_in(window, step=0.05):
+#     alpha = window.attributes('-alpha')
+#     while alpha < 1:
+#         alpha += step
+#         if alpha > 1:
+#             alpha = 1
+#         window.attributes('-alpha', alpha)
+#         window.update()
+#         time.sleep(0.01)
+
+def change_theme(root, theme):
+    # fade_out(root)
+    root.style.theme_use(theme)
+    # fade_in(root)
+
+
+
 
 # endregion
 
@@ -208,11 +266,41 @@ def show_progress(duration, label='Processing...', ):
 
 # region Request Page
 
-request_label = ttk.Label(root, text='Send request to the stat.gov.kz to access the parser:')
-request_label.pack(pady=10, padx=5)
+menu_bar = tk.Menu(root)
+root.config(menu=menu_bar)
 
-request_btn = ttk.Button(root, text='Send Request', command=send_request, style='Accent.TButton')
-request_btn.pack(pady=5, padx=5)
+
+home_menu = tk.Menu(menu_bar, tearoff=0, bg='#222222', fg='white',
+                   activebackground='#222222', activeforeground='white')
+menu_bar.add_cascade(label="Home", menu=home_menu)
+toolbar_var = tk.BooleanVar(value=True)
+statusbar_var = tk.BooleanVar(value=True)
+home_menu.add_command(label="Help", command=show_help)
+home_menu.add_separator()
+home_menu.add_command(label="Exit", command=root.quit)
+
+
+theme_menu = tk.Menu(menu_bar, tearoff=0, bg='#222222', fg='white',
+                    activebackground='#222222', activeforeground='white')
+menu_bar.add_cascade(label="Change Theme", menu=theme_menu)
+theme_menu.add_command(label="Solar", command=lambda: change_theme(root, 'solar'))
+theme_menu.add_command(label="Superhero", command=lambda: change_theme(root, 'superhero'))
+theme_menu.add_command(label="Darkly", command=lambda: change_theme(root, 'darkly'))
+theme_menu.add_command(label="Cyborg", command=lambda: change_theme(root, 'cyborg'))
+theme_menu.add_command(label="Vapor", command=lambda: change_theme(root, 'vapor'))
+theme_menu.add_separator()
+theme_menu.add_command(label="Use default", command=lambda: change_theme(root, 'cosmo'))
+
+
+def request_page():
+    clear_window()
+    request_label = ttk.Label(root, text='Send request to the stat.gov.kz to access the parser:')
+    request_label.pack(pady=10, padx=5)
+
+    request_btn = ttk.Button(root, text='Send Request', command=send_request, style='Accent.TButton')
+    request_btn.pack(pady=5, padx=5)
+
+request_page()
 
 # endregion
 
