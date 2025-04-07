@@ -10,6 +10,7 @@ import time
 import webbrowser
 
 from utils.parser import *
+from utils.downloader import *
 from styles.title_bar_theme import apply_theme_to_titlebar
 
 # region Config
@@ -195,7 +196,7 @@ def start_download(category_name, btn_text, links_to_stats, option, error_label,
     elif option == 'Spreadsheets only' or option == 'Dynamic Tables only' or option == 'Select All':
         error_label.config(text=f'')
         error_label.pack(pady=5, padx=5)
-        print('passed!')
+        downloader(links_to_stats, option, json_selected, csv_selected)
 
     else:
         error_label.config(text=f'You have to select the provided values only, not {option}')
