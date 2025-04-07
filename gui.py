@@ -1,5 +1,4 @@
 import tkinter as tk
-# from tkinter import ttk
 
 import ttkbootstrap as ttk
 from ttkbootstrap.tooltip import ToolTip
@@ -16,7 +15,6 @@ from styles.title_bar_theme import apply_theme_to_titlebar
 
 # region Config
 
-# root = tk.Tk()
 # icon = tk.PhotoImage(file='../static/icon.png')
 # root.iconphoto(True, icon)
 
@@ -31,7 +29,6 @@ PARSE_URL = 'https://stat.gov.kz/en/'
 SOUP = None
 SUCCESS_COLOR = '#40C9A2'
 DANGER_COLOR = '#F43F5E'
-
 
 # endregion
 
@@ -166,8 +163,6 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
         error_label = ttk.Label(root, foreground=DANGER_COLOR)
 
         download_btn = ttk.Button(root, text='Download now', command=lambda: start_download(
-            category_name,
-            btn_text,
             links_to_stats,
             select_option.get(), 
             error_label,
@@ -186,7 +181,7 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
 
 
 
-def start_download(category_name, btn_text, links_to_stats, option, error_label, json_selected, csv_selected):
+def start_download(links_to_stats, option, error_label, json_selected, csv_selected):
     def run_download():
 
         message_box.insert('end', 'Parsing elements...\nGetting things done\n', 'info')
@@ -208,17 +203,8 @@ def start_download(category_name, btn_text, links_to_stats, option, error_label,
             links.append(link)
 
 
-        # message = ''
-        # message_label.config(text='Getting things ready...')
-        # root.update_idletasks()
         message_box.insert('end', 'Download started successfully!\n', 'info')
         message_box.see('end')
-
-        # for link in links:
-        #     for title, url in link.items():
-        #         message = downloader(title, url)
-        #         message_label.config(text=message)
-        #         root.update_idletasks()
 
         success_warning_danger = [0,0,0]
         
@@ -263,7 +249,6 @@ def start_download(category_name, btn_text, links_to_stats, option, error_label,
     elif option == 'Spreadsheets only' or option == 'Dynamic Tables only' or option == 'Select All':
         clear_window()
 
-        # show_progress(0.005, label='Downloading...')
         global message_box
         message_box = tk.Text(root, height=20, width=70)
         message_box.tag_config('success', foreground=SUCCESS_COLOR)
@@ -305,30 +290,9 @@ def show_progress(duration, label='Processing...', ):
     progress['value'] = 0
 
 
-# def fade_out(window, step=0.05):
-#     alpha = window.attributes('-alpha')
-#     while alpha > 0:
-#         alpha -= step
-#         if alpha < 0:
-#             alpha = 0
-#         window.attributes('-alpha', alpha)
-#         window.update()
-#         time.sleep(0.01)
-
-# def fade_in(window, step=0.05):
-#     alpha = window.attributes('-alpha')
-#     while alpha < 1:
-#         alpha += step
-#         if alpha > 1:
-#             alpha = 1
-#         window.attributes('-alpha', alpha)
-#         window.update()
-#         time.sleep(0.01)
 
 def change_theme(root, theme):
-    # fade_out(root)
     root.style.theme_use(theme)
-    # fade_in(root)
 
 
 def define_class(message):
@@ -353,11 +317,7 @@ def count_downloads(message, success_warning_danger):
 # endregion
 
 
-
-# text = ttk.Text(frame, height=5, width=30)
-
-
-# region Request Page
+# region Menu Bar
 
 menu_bar = tk.Menu(root)
 root.config(menu=menu_bar)
@@ -372,7 +332,6 @@ home_menu.add_command(label='Home Page', command=request_page)
 home_menu.add_separator()
 home_menu.add_command(label="Exit", command=root.quit)
 
-
 theme_menu = tk.Menu(menu_bar, tearoff=0, bg='#222222', fg='white',
                     activebackground='#222222', activeforeground='white')
 menu_bar.add_cascade(label="Change Theme", menu=theme_menu)
@@ -381,11 +340,6 @@ theme_menu.add_command(label="Superhero", command=lambda: change_theme(root, 'su
 theme_menu.add_command(label="Darkly", command=lambda: change_theme(root, 'darkly'))
 theme_menu.add_command(label="Cyborg", command=lambda: change_theme(root, 'cyborg'))
 theme_menu.add_command(label="Vapor", command=lambda: change_theme(root, 'vapor'))
-theme_menu.add_separator()
-theme_menu.add_command(label="Use default", command=lambda: change_theme(root, 'cosmo'))
-
-
-
 
 request_page()
 
