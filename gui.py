@@ -182,7 +182,7 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
         back_btn.pack(pady=5, padx=5)
 
 
-def start_download(category_name, btn_text, links_to_stats, option, error_label, json_selected, csv_selected, ):
+def start_download(category_name, btn_text, links_to_stats, option, error_label, json_selected, csv_selected):
 
     print(option, json_selected, csv_selected, links_to_stats)
     if len(option) == 0:
