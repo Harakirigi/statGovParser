@@ -191,4 +191,4 @@ def downloader(links_to_stats, option, json_selected, csv_selected):
             message = download_excel_file(title, url)
             return message
 
-# downloader(['https://stat.gov.kz/en/industries/business-statistics/stat-industrial-production/'], 'Spreadsheets only', False, False)
+# downloader(['https://stat.gov.kz/en/industries/economy/national-accounts/'], 'Spreadsheets only', False, False)

@@ -194,14 +194,41 @@ def start_download(category_name, btn_text, links_to_stats, option, error_label,
         error_label.config(text='Why so many characters...')
 
     elif option == 'Spreadsheets only' or option == 'Dynamic Tables only' or option == 'Select All':
-        error_label.config(text=f'')
-        error_label.pack(pady=5, padx=5)
+        clear_window()
+        show_progress(0.005, label='Downloading...')
 
         message_label = ttk.Label(root)
         message_label.pack()
+
+
+        link_page_to_parse = check_for_links(links_to_stats, option)
+        bodies = []
+        for link, page in link_page_to_parse.items():
+            body = get_body(page, link)
+            bodies.append(body)
+
+        links = []
+        for body in bodies:
+            link = get_link(body, json_selected, csv_selected)
+            links.append(link)
+
+        message = 'Request sent...'
+        for link in links:
+            for title, url in link.items():
+                message = download_excel_file(title, url)
+                message_label.config(text=message)
+
+
+
+
         
-        message = downloader(links_to_stats, option, json_selected, csv_selected)
-        message_label.config(text=message)
+
+
+
+
+        
+
+        
 
 
     else:
