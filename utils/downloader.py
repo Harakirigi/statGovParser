@@ -72,9 +72,64 @@ def get_body(soup, parse_url):
     except Exception as error:
         print(RED + 'Error while getting body: ', error, RESET)
 
+def get_link(bodies, json_selected):
+    try:        
+        links = {}
+        for body in bodies:
+            link = body.find('a')
+            api_link = link['href']
+            link_title = link.text.strip().replace('"','').replace(' ','_').replace('\\t','').replace('\\n','')
+
+            if not link_title or link_title == 'xls':
+                link_title = body.find(class_='divTableCell').text.strip().replace('"','').replace(' ','_').replace('\\n','')
+                link_title = 'Dynamic table ' + link_title
+                
+            links[link_title] = url + api_link
+
+        print(CYAN + 'links obtained successfully' + RESET)
+        return links
+            
+    except Exception as error:
+        print(RED + 'Error while getting link: ', error, RESET)
 
 
-link_page_to_parse = check_for_links(all_links)
+def download_excel_file(title, link, save_path='downloads'):
+    os.makedirs(save_path, exist_ok=True)
+    try:
+        response = requests.get(link, stream=True, headers={'User-Agent': 'Mozilla/5.0'})
+        response.raise_for_status()
+        
+        filename = title + '.xlsx'
+        filepath = os.path.join(save_path, filename)
+        
+        with open(filepath, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+        
+        print(CYAN + f"Successfully downloaded: {filename}" + RESET)
+        return filepath
+    except Exception as e:
+        print(RED + f"Failed to download {link}: {str(e)}" + RESET)
+        return None
 
-for link, page in link_page_to_parse.items():
-    get_body(page, link)
+
+
+def downloader():
+    link_page_to_parse = check_for_links(all_links)
+
+    bodies = []
+    for link, page in link_page_to_parse.items():
+        body = get_body(page, link)
+        bodies.append(body)
+
+    links = []
+    for body in bodies:
+        link = get_link(body, json_selected=True)
+        links.append(link)
+
+    for link in links:
+        for title, url in link.items():
+            download_excel_file(title, url)
+
+
+downloader()
