@@ -157,11 +157,11 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
 
         json_checkbox = ttk.Checkbutton(root, text="Download JSON files if exists", variable=is_json)
         json_checkbox.pack(pady=10, padx=10)
-        ToolTip(json_checkbox, text="Attention! Very few documents have JSON file format supported. You may download XLS file format in majority")
+        ToolTip(json_checkbox, text="Attention! Very few documents have JSON file format supported. You may download XLS file format in majority. However, it's recommended to disable these options for better speed performance")
 
         csv_checkbox = ttk.Checkbutton(root, text="Download CSV files if exists", variable=is_csv)
         csv_checkbox.pack(pady=10, padx=10)
-        ToolTip(csv_checkbox, text="Attention! Very few documents have CSV file format supported. You may download XLS file format in majority")
+        ToolTip(csv_checkbox, text="Attention! Very few documents have CSV file format supported. You may download XLS file format in majority. However, it's recommended to disable these options for better speed performance")
 
         error_label = ttk.Label(root, foreground=DANGER_COLOR)
 
@@ -185,13 +185,14 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
         back_btn.pack(pady=5, padx=5)
 
 
+
 def start_download(category_name, btn_text, links_to_stats, option, error_label, json_selected, csv_selected):
     def run_download():
 
-        message_box.insert('end', 'Download started successfully!\n', 'success')
+        message_box.insert('end', 'Parsing elements...\nGetting things done --- 100%\n', 'info')
         message_box.see('end')
+        message_label.config(text='Parsing elements...')
 
-        show_progress(0.005, label='Downloading...')
 
         link_page_to_parse = check_for_links(links_to_stats, option)
         # bodies = [get_body(page, link) for link, page in link_page_to_parse.items()]
@@ -210,7 +211,7 @@ def start_download(category_name, btn_text, links_to_stats, option, error_label,
         # message = ''
         # message_label.config(text='Getting things ready...')
         # root.update_idletasks()
-        message_box.insert('end', 'Getting things ready...\n', 'info')
+        message_box.insert('end', 'Download started successfully!\n', 'info')
         message_box.see('end')
 
         # for link in links:
@@ -218,20 +219,28 @@ def start_download(category_name, btn_text, links_to_stats, option, error_label,
         #         message = downloader(title, url)
         #         message_label.config(text=message)
         #         root.update_idletasks()
+
+        success_warning_danger = [0,0,0]
+        
+        message_label.config(text='Downloading... Please wait...')
+
         for link in links:
             for title, url in link.items():
                 message = downloader(title, url)
-                message_box.insert('end', message + '\n', 'success')
+                classs = define_class(message)
+                success_warning_danger = count_downloads(message, success_warning_danger)
+                message_box.insert('end', message + '\n', classs)
                 message_box.see('end')
                 time.sleep(0.05)
 
 
 
         clear_window(exception=message_box)
-        # message_label = ttk.Label(root)
-        # message_label.pack(pady=5)
-        # message_label.config(text='Everything downloaded successfully!', foreground=SUCCESS_COLOR, font=('Segoe UI', 10, 'bold'))
+
+        message_label.config(text='Everything downloaded successfully!', foreground=SUCCESS_COLOR, font=('Segoe UI', 10, 'bold'))
+
         message_box.insert('end', 'Everything downloaded successfully!\n', 'info')
+        message_box.insert('end', f'Files downloaded: {success_warning_danger[0]}\nWarnings given: {success_warning_danger[1]}\nFails: {success_warning_danger[2]}\n', 'info')
         message_box.see('end')
 
         back_btn = ttk.Button(root, text='Back to Main Menu', command=lambda: send_request(SOUP=SOUP, progress=False), bootstyle=PRIMARY)
@@ -254,43 +263,23 @@ def start_download(category_name, btn_text, links_to_stats, option, error_label,
     elif option == 'Spreadsheets only' or option == 'Dynamic Tables only' or option == 'Select All':
         clear_window()
 
-        # message_label = ttk.Label(root, text='Download started successfully!', foreground=SUCCESS_COLOR)
-        # message_label.pack(pady=5)
         # show_progress(0.005, label='Downloading...')
         global message_box
         message_box = tk.Text(root, height=20, width=70)
         message_box.tag_config('success', foreground=SUCCESS_COLOR)
-        message_box.tag_config('info', foreground='green')
+        message_box.tag_config('danger', foreground=DANGER_COLOR)
+        message_box.tag_config('warning', foreground='#E6AF2E')
+        message_box.tag_config('info', foreground='white')
         message_box.pack(pady=5)
+
+        message_label = ttk.Label(root, text='Parsing elements...\n', foreground=SUCCESS_COLOR)
+        message_label.pack(pady=5)
 
         threading.Thread(target=run_download).start()
 
     else:
         error_label.config(text=f'You have to select the provided values only, not {option}')
         return
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-
-
-
-
-        
-
         
 
 
@@ -342,6 +331,23 @@ def change_theme(root, theme):
     # fade_in(root)
 
 
+def define_class(message):
+    if message.startswith('✅'):
+        return 'success'
+    if message.startswith('⚠️'):
+        return 'warning'
+    if message.startswith('❌'):
+        return 'danger'
+
+def count_downloads(message, success_warning_danger):
+    if message.startswith('✅'):
+        success_warning_danger[0] += 1
+    if message.startswith('⚠️'):
+        success_warning_danger[1] += 1
+    if message.startswith('❌'):
+        success_warning_danger[2] += 1
+
+    return success_warning_danger
 
 
 # endregion
