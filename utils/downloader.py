@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from parser import get_request
+from .parser import get_request
 import os
 
 CYAN = '\033[36m'
@@ -191,5 +191,4 @@ def downloader(links_to_stats, option, json_selected, csv_selected):
             message = download_excel_file(title, url)
             return message
 
-res = downloader(['https://stat.gov.kz/en/industries/business-statistics/stat-industrial-production/'], 'Spreadsheets only', False, False)
-print(res)
+# downloader(['https://stat.gov.kz/en/industries/business-statistics/stat-industrial-production/'], 'Spreadsheets only', False, False)
