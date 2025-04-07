@@ -32,6 +32,7 @@ SOUP = None
 SUCCESS_COLOR = '#40C9A2'
 DANGER_COLOR = '#F43F5E'
 
+
 # endregion
 
 
@@ -220,17 +221,17 @@ def start_download(category_name, btn_text, links_to_stats, option, error_label,
         for link in links:
             for title, url in link.items():
                 message = downloader(title, url)
-                message_box.insert('end', message + '\n')
+                message_box.insert('end', message + '\n', 'success')
                 message_box.see('end')
                 time.sleep(0.05)
 
 
 
-        clear_window()
+        clear_window(exception=message_box)
         # message_label = ttk.Label(root)
         # message_label.pack(pady=5)
         # message_label.config(text='Everything downloaded successfully!', foreground=SUCCESS_COLOR, font=('Segoe UI', 10, 'bold'))
-        message_box.insert('end', 'Everything downloaded successfully!\n', 'success')
+        message_box.insert('end', 'Everything downloaded successfully!\n', 'info')
         message_box.see('end')
 
         back_btn = ttk.Button(root, text='Back to Main Menu', command=lambda: send_request(SOUP=SOUP, progress=False), bootstyle=PRIMARY)
@@ -238,12 +239,6 @@ def start_download(category_name, btn_text, links_to_stats, option, error_label,
 
         exit_btn = ttk.Button(root, text="Exit", command=root.quit, bootstyle=INFO)
         exit_btn.pack(pady=5, padx=5)
-
-        
-
-
-
-
 
 
 
@@ -259,20 +254,22 @@ def start_download(category_name, btn_text, links_to_stats, option, error_label,
     elif option == 'Spreadsheets only' or option == 'Dynamic Tables only' or option == 'Select All':
         clear_window()
 
-    else:
-        error_label.config(text=f'You have to select the provided values only, not {option}')
-
-
         # message_label = ttk.Label(root, text='Download started successfully!', foreground=SUCCESS_COLOR)
         # message_label.pack(pady=5)
         # show_progress(0.005, label='Downloading...')
         global message_box
         message_box = tk.Text(root, height=20, width=70)
-        message_box.tag_config('success', foreground='green')
-        message_box.tag_config('info', foreground='blue')
+        message_box.tag_config('success', foreground=SUCCESS_COLOR)
+        message_box.tag_config('info', foreground='green')
         message_box.pack(pady=5)
 
         threading.Thread(target=run_download).start()
+
+    else:
+        error_label.config(text=f'You have to select the provided values only, not {option}')
+        return
+
+
 
 
 
@@ -301,9 +298,9 @@ def start_download(category_name, btn_text, links_to_stats, option, error_label,
 # region Util Functions
 
 
-def clear_window():
+def clear_window(exception=None):
     for widget in root.winfo_children():
-        if widget is not menu_bar:
+        if widget is not menu_bar and not exception:
             widget.destroy()
 
 def show_progress(duration, label='Processing...', ):
