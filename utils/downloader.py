@@ -80,9 +80,16 @@ def get_link(bodies, json_selected):
             api_link = link['href']
             link_title = link.text.strip().replace('"','').replace(' ','_').replace('\\t','').replace('\\n','')
 
+            if json_selected and link_title == 'json':
+                link_title = body.find(class_='divTableCell').text.strip().replace('"','').replace(' ','_').replace('\\n','')
+                link_title = 'Dynamic table ' + link_title
+                api_link = change_format(api_link, '/json')
+
+
             if not link_title or link_title == 'xls':
                 link_title = body.find(class_='divTableCell').text.strip().replace('"','').replace(' ','_').replace('\\n','')
                 link_title = 'Dynamic table ' + link_title
+
                 
             links[link_title] = url + api_link
 
@@ -113,6 +120,12 @@ def download_excel_file(title, link, save_path='downloads'):
         return None
 
 
+def change_format(string, change):
+    insert_position = -9
+    pos = len(string) + insert_position
+    new_s = string[:pos] + ''.join(change) + string[pos:]
+    return new_s
+
 
 def downloader():
     link_page_to_parse = check_for_links(all_links)
@@ -130,6 +143,5 @@ def downloader():
     for link in links:
         for title, url in link.items():
             download_excel_file(title, url)
-
 
 downloader()
