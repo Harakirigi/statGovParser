@@ -15,8 +15,6 @@ from styles.title_bar_theme import apply_theme_to_titlebar
 
 # region Config
 
-# icon = tk.PhotoImage(file='../static/icon.png')
-# root.iconphoto(True, icon)
 
 # apply_theme_to_titlebar(root)
 # sv_ttk.set_theme("dark")
@@ -24,6 +22,8 @@ root = ttk.Window(themename="darkly")
 root.geometry("800x600+600+200")
 root.title("Stat.Gov Parser Manager")
 
+icon = tk.PhotoImage(file='../static/icon.png')
+root.iconphoto(True, icon)
 
 PARSE_URL = 'https://stat.gov.kz/en/'
 SOUP = None
