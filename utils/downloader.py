@@ -104,7 +104,7 @@ def get_body(soup, parse_url):
         print(RED + 'Error while getting body: ', error, RESET)
 
 def get_link(bodies, json_selected, csv_selected):
-    try:        
+    try:
         links = {}
         for body in bodies:
             link = body.find('a')
@@ -112,22 +112,23 @@ def get_link(bodies, json_selected, csv_selected):
             link_title = link.text.strip().replace('"','').replace(' ','_').replace('\\t','').replace('\\n','')
 
             if json_selected:
-                link_title = body.find(class_='divTableCell').text.strip().replace('"','').replace(' ','_').replace('\\n','')
-                link_title = 'JSON Dynamic table ' + link_title
-                api_link = change_format(api_link, '/json')
-                links[link_title] = url + api_link
+                json_table_title = body.find(class_='divTableCell').text.strip().replace('"','').replace(' ','_').replace('\\t','').replace('\\n','')
+                json_table_title = 'JSON Dynamic table ' + json_table_title
+                json_api_link = change_format(api_link, '/json')
+                links[json_table_title] = url + json_api_link
             if csv_selected:
-                link_title = body.find(class_='divTableCell').text.strip().replace('"','').replace(' ','_').replace('\\n','')
-                link_title = 'CSV Dynamic table ' + link_title
-                api_link = change_format(api_link, '/csv')
+                csv_table_title = body.find(class_='divTableCell').text.strip().replace('"','').replace(' ','_').replace('\\t','').replace('\\n','')
+                csv_table_title = 'CSV Dynamic table ' + csv_table_title
+                csv_api_link = change_format(api_link, '/csv')
+                links[csv_table_title] = url + csv_api_link
+
+            if link_title == 'xls':
+                table_title = body.find(class_='divTableCell').text.strip().replace('"','').replace(' ','_').replace('\\t','').replace('\\n','')
+                table_title = 'Dynamic table ' + table_title
+                links[table_title] = url + api_link
+
+            elif link_title:
                 links[link_title] = url + api_link
-
-            # if not link_title or link_title == 'xls':
-            #     link_title = body.find(class_='divTableCell').text.strip().replace('"','').replace(' ','_').replace('\\n','')
-            #     link_title = 'Dynamic table ' + link_title
-
-                
-            # links[link_title] = url + api_link
 
         print(CYAN + 'links obtained successfully' + RESET)
         return links
@@ -141,8 +142,6 @@ def download_excel_file(title, link, save_path='downloads'):
     try:
         response = requests.get(link, stream=True, headers={'User-Agent': 'Mozilla/5.0'})
         response.raise_for_status()
-        if requests.exceptions.HTTPError:
-            pass
         
         filename = title + '.xlsx'
         if title.startswith('JSON'):
@@ -155,12 +154,15 @@ def download_excel_file(title, link, save_path='downloads'):
         with open(filepath, 'wb') as f:
             for chunk in response.iter_content(chunk_size=8192):
                 f.write(chunk)
-        
-        return print(CYAN + f"Successfully downloaded: {filename}" + RESET)
+
+        print(CYAN + f"Successfully downloaded: {filename}" + RESET)
+        return f"✅ Successfully downloaded: {filename}"
     except requests.exceptions.HTTPError:
-        pass
+        print(YELLOW + f"HTTP error for: {link}" + RESET)
+        return f"⚠️ HTTP error for: {link}"
     except Exception as e:
-        return print(RED + f"Failed to download {link}: {str(e)}" + RESET)
+        print(RED + f"Failed to download {link}: {str(e)}" + RESET)
+        return f"❌ Failed to download {link}: {str(e)}"
 
 
 def change_format(string, change):
@@ -171,7 +173,7 @@ def change_format(string, change):
 
 
 def downloader(links_to_stats, option, json_selected, csv_selected):
-    link_page_to_parse = check_for_links(links_to_stats)
+    link_page_to_parse = check_for_links(links_to_stats, option)
 
     bodies = []
     for link, page in link_page_to_parse.items():
@@ -180,28 +182,14 @@ def downloader(links_to_stats, option, json_selected, csv_selected):
 
     links = []
     for body in bodies:
-        link = get_link(body, json_selected=True)
+        link = get_link(body, json_selected, csv_selected)
         links.append(link)
+
 
     for link in links:
         for title, url in link.items():
-            download_excel_file(title, url)
+            message = download_excel_file(title, url)
+            return message
 
-# downloader()
-
-link_page_to_parse = check_for_links(['https://stat.gov.kz/en/industries/economy/national-accounts/'])
-
-bodies = []
-for link, page in link_page_to_parse.items():
-    body = get_body(page, link)
-    bodies.append(body)
-
-links = []
-for body in bodies:
-    link = get_link(body, json_selected=True)
-    print(link)
-    links.append(link)
-
-for link in links:
-    for title, url in link.items():
-        download_excel_file(title, url)
+res = downloader(['https://stat.gov.kz/en/industries/business-statistics/stat-industrial-production/'], 'Spreadsheets only', False, False)
+print(res)
