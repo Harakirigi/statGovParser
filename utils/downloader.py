@@ -14,7 +14,7 @@ url = "https://stat.gov.kz"
 parse_url = "https://stat.gov.kz/en/"
 
 
-def get_request(url):
+def head_request(url):
     try:
         response = requests.head(url, allow_redirects=True, timeout=5, headers={'User-Agent': 'Mozilla/5.0'})
         if response.status_code == 200:
@@ -29,28 +29,27 @@ def get_request(url):
 
 def check_for_links(links_to_stats):
     link_page_to_parse = {}
-    pages_to_parse = []
-    links_to_parse = []
 
     for link_to_stats in links_to_stats:
         spreadsheets_page = get_request(f'{link_to_stats}spreadsheets/')
         if not spreadsheets_page:
+            print(YELLOW, ' Non-existent page skipped', RESET)
             pass
         else:
-            pages_to_parse.append(spreadsheets_page)
+            link_page_to_parse[f'{link_to_stats}spreadsheets/'] = spreadsheets_page
+            print(GREEN, f'{link_to_stats}spreadsheets/ successfully added', RESET)
 
         dynamic_tables_page = get_request(f'{link_to_stats}dynamic-tables/')
         if not dynamic_tables_page:
+            print(YELLOW, ' Non-existent page skipped', RESET)
             pass
         else:
-            links_to_parse.append(link_to_stats)
-            pages_to_parse.append(dynamic_tables_page)
-            link_page_to_parse[link_to_stats] = dynamic_tables_page
+            link_page_to_parse[f'{link_to_stats}dynamic-tables/'] = dynamic_tables_page
+            print(GREEN, f'{link_to_stats}dynamic-tables/ successfully added', RESET)
+    
+    print(CYAN, 'Links and pages successfully parsed!', RESET)
+    return link_page_to_parse
 
-    print(pages_to_parse)
-    print(links_to_parse)
-    print(link_page_to_parse)
-
-all_links = ['https://stat.gov.kz/en/industries/environment/stat-eco/', 'https://stat.gov.kz/en/climate-change/']
+all_links = ['https://stat.gov.kz/en/industries/environment/stat-eco/', "https://stat.gov.kz/en/industries/economy/national-accounts/",  'https://stat.gov.kz/en/climate-change/']
 
 check_for_links(all_links)
