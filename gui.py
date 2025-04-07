@@ -201,8 +201,7 @@ def start_download(category_name, btn_text, links_to_stats, option, error_label,
         message_label.pack()
         
         message = downloader(links_to_stats, option, json_selected, csv_selected)
-        message_label.insert('end', message + '\n')
-        message_label.see('end')
+        message_label.config(text=message)
 
 
     else:
