@@ -189,7 +189,7 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
 def start_download(category_name, btn_text, links_to_stats, option, error_label, json_selected, csv_selected):
     def run_download():
 
-        message_box.insert('end', 'Parsing elements...\nGetting things done --- 100%\n', 'info')
+        message_box.insert('end', 'Parsing elements...\nGetting things done\n', 'info')
         message_box.see('end')
         message_label.config(text='Parsing elements...')
 
