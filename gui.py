@@ -8,6 +8,7 @@ import sv_ttk
 
 import time
 import webbrowser
+import threading
 
 from utils.downloader import *
 from utils.parser import *
@@ -184,55 +185,118 @@ def to_get_page(SOUP, category_name, btn_text, all=False):
 
 
 def start_download(category_name, btn_text, links_to_stats, option, error_label, json_selected, csv_selected):
+    def run_download():
 
-    print(option, json_selected, csv_selected, links_to_stats)
-    if len(option) == 0:
-        error_label.config(text='You have to select one of the provided values')
-        error_label.pack(pady=5, padx=5)
-    
-    if len(option) > 30:
-        error_label.config(text='Why so many characters...')
+        message_box.insert('end', 'Download started successfully!\n', 'success')
+        message_box.see('end')
 
-    elif option == 'Spreadsheets only' or option == 'Dynamic Tables only' or option == 'Select All':
-        clear_window()
         show_progress(0.005, label='Downloading...')
 
-        message_label = ttk.Label(root)
-        message_label.pack()
-
-
         link_page_to_parse = check_for_links(links_to_stats, option)
+        # bodies = [get_body(page, link) for link, page in link_page_to_parse.items()]
         bodies = []
         for link, page in link_page_to_parse.items():
             body = get_body(page, link)
             bodies.append(body)
 
+        # links = [get_link(body, json_selected, csv_selected) for body in bodies]
         links = []
         for body in bodies:
             link = get_link(body, json_selected, csv_selected)
             links.append(link)
 
-        message = 'Request sent...'
+
+        # message = ''
+        # message_label.config(text='Getting things ready...')
+        # root.update_idletasks()
+        message_box.insert('end', 'Getting things ready...\n', 'info')
+        message_box.see('end')
+
+        # for link in links:
+        #     for title, url in link.items():
+        #         message = downloader(title, url)
+        #         message_label.config(text=message)
+        #         root.update_idletasks()
         for link in links:
             for title, url in link.items():
-                message = download_excel_file(title, url)
-                message_label.config(text=message)
+                message = downloader(title, url)
+                message_box.insert('end', message + '\n')
+                message_box.see('end')
+                time.sleep(0.05)
 
 
 
+        clear_window()
+        # message_label = ttk.Label(root)
+        # message_label.pack(pady=5)
+        # message_label.config(text='Everything downloaded successfully!', foreground=SUCCESS_COLOR, font=('Segoe UI', 10, 'bold'))
+        message_box.insert('end', 'Everything downloaded successfully!\n', 'success')
+        message_box.see('end')
+
+        back_btn = ttk.Button(root, text='Back to Main Menu', command=lambda: send_request(SOUP=SOUP, progress=False), bootstyle=PRIMARY)
+        back_btn.pack(padx=10, pady=10)
+
+        exit_btn = ttk.Button(root, text="Exit", command=root.quit, bootstyle=INFO)
+        exit_btn.pack(pady=5, padx=5)
 
         
 
 
 
 
-        
 
-        
 
+
+    if len(option) == 0:
+        error_label.config(text='You have to select one of the provided values')
+        error_label.pack(pady=5, padx=5)
+        return
+    
+    if len(option) > 30:
+        error_label.config(text='Why so many characters...')
+        return
+
+    elif option == 'Spreadsheets only' or option == 'Dynamic Tables only' or option == 'Select All':
+        clear_window()
 
     else:
         error_label.config(text=f'You have to select the provided values only, not {option}')
+
+
+        # message_label = ttk.Label(root, text='Download started successfully!', foreground=SUCCESS_COLOR)
+        # message_label.pack(pady=5)
+        # show_progress(0.005, label='Downloading...')
+        global message_box
+        message_box = tk.Text(root, height=20, width=70)
+        message_box.tag_config('success', foreground='green')
+        message_box.tag_config('info', foreground='blue')
+        message_box.pack(pady=5)
+
+        threading.Thread(target=run_download).start()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+        
+
+        
+
+
 
 # region Util Functions
 

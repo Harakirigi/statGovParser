@@ -137,7 +137,7 @@ def get_link(bodies, json_selected, csv_selected):
         print(RED + 'Error while getting link: ', error, RESET)
 
 
-def download_excel_file(title, link, save_path='downloads'):
+def downloader(title, link, save_path='downloads'):
     os.makedirs(save_path, exist_ok=True)
     try:
         response = requests.get(link, stream=True, headers={'User-Agent': 'Mozilla/5.0'})
@@ -172,23 +172,23 @@ def change_format(string, change):
     return new_s
 
 
-def downloader(links_to_stats, option, json_selected, csv_selected):
-    link_page_to_parse = check_for_links(links_to_stats, option)
+# def downloader(links_to_stats, option, json_selected, csv_selected):
+#     link_page_to_parse = check_for_links(links_to_stats, option)
 
-    bodies = []
-    for link, page in link_page_to_parse.items():
-        body = get_body(page, link)
-        bodies.append(body)
+#     bodies = []
+#     for link, page in link_page_to_parse.items():
+#         body = get_body(page, link)
+#         bodies.append(body)
 
-    links = []
-    for body in bodies:
-        link = get_link(body, json_selected, csv_selected)
-        links.append(link)
+#     links = []
+#     for body in bodies:
+#         link = get_link(body, json_selected, csv_selected)
+#         links.append(link)
 
 
-    for link in links:
-        for title, url in link.items():
-            message = download_excel_file(title, url)
-            return message
+#     for link in links:
+#         for title, url in link.items():
+#             message = download_excel_file(title, url)
+#             return message
 
 # downloader(['https://stat.gov.kz/en/industries/economy/national-accounts/'], 'Spreadsheets only', False, False)
